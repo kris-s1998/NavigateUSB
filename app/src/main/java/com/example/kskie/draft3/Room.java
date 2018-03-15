@@ -5,46 +5,23 @@ package com.example.kskie.draft3;
  */
 
 public class Room {
+    String firstName;
+    String lastName;
+    String group;
+    String level;
+    String number;
+    String viaRoom;
 
-    private String roomNo;
-    private String description;
-    private int floorNo;
-    private String tutor;
+    public Room(){
 
-    public String getRoomNo() {
-        return roomNo;
     }
 
-    public void setRoomNo(String roomNo) {
-        this.roomNo = roomNo;
+    public Room(String firstName, String group, String lastName, String level, String number, String viaRoom) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.group = group;
+        this.level = level;
+        this.number = number;
+        this.viaRoom = viaRoom;
     }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getFloorNo() {
-        return floorNo;
-    }
-
-    public void setFloorNo(int floorNo) {
-        this.floorNo = floorNo;
-    }
-
-    public String getTutor() {
-        return tutor;
-    }
-
-    public void setTutor(String tutor) {
-        this.tutor = tutor;
-    }
-
-
-
-
-
 }
