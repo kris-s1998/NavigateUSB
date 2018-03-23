@@ -1,6 +1,8 @@
 package com.example.kskie.draft3;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,28 +22,36 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     Context context;
 
-    ArrayList<String> fullNameList;
-    ArrayList<String> userNameList;
-    ArrayList<String> profilePicList;
+    ArrayList<Room> foundRooms;
 
     class SearchViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView profileImage;
-        TextView full_name, user_name;
+        TextView roomNumber, tutorName;
 
         public SearchViewHolder(View itemView) {
             super(itemView);
-            profileImage = (ImageView) itemView.findViewById(R.id.profileImage);
-            full_name = itemView.findViewById(R.id.full_name);
-            user_name = itemView.findViewById(R.id.user_name);
+            roomNumber = itemView.findViewById(R.id.roomNumber);
+            tutorName = itemView.findViewById(R.id.tutorName);
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, RoomActivity.class);
+                    Bundle b = new Bundle();
+                    String roomNo = foundRooms.get(getLayoutPosition()).getNumber();
+                    b.putString("roomNo",roomNo);
+                    intent.putExtras(b);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 
-    public SearchAdapter(Context context, ArrayList<String> fullNameList, ArrayList<String> userNameList, ArrayList<String> profilePicList) {
+    public SearchAdapter(Context context, ArrayList<Room> foundRooms) {
         this.context = context;
-        this.fullNameList = fullNameList;
-        this.userNameList = userNameList;
-        this.profilePicList = profilePicList;
+
+        this.foundRooms = foundRooms;
     }
 
     @Override
@@ -52,17 +62,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(SearchViewHolder holder, int position) {
-        /*holder.full_name.setText(fullNameList.get(position));
-        holder.user_name.setText(userNameList.get(position));
+        Room currentRoom = foundRooms.get(position);
+        holder.roomNumber.setText(currentRoom.getFirstName() + " " + currentRoom.getLastName());
+        holder.tutorName.setText("Room "+ currentRoom.getNumber() + " (Level " + currentRoom.getLevel() + ")");
 
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.mipmap.ic_launcher_round);
-
-        Glide.with(context).setDefaultRequestOptions(requestOptions).asBitmap().load(profilePicList.get(position)).into(holder.profileImage);*/
     }
 
     @Override
     public int getItemCount() {
-        return fullNameList.size();
+        return foundRooms.size();
     }
 }

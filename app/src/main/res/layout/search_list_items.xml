@@ -6,36 +6,28 @@
     android:orientation="horizontal"
     android:padding="10dp"
     >
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profileImage"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:src="@mipmap/ic_launcher_round"
-        android:padding="2dp"
-        app:civ_border_color="@color/colorPrimaryDark"
-        app:civ_border_width="1dp"
-        />
     
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_gravity="center">
 
         <TextView
-            android:id="@+id/full_name"
+            android:id="@+id/roomNumber"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="Full name goes here"
-            android:textSize="15dp"
+            android:layout_width="wrap_content"
+            android:text="room"
+            android:textSize="20sp"
             android:textColor="#212121"/>
 
         <TextView
-            android:id="@+id/user_name"
+            android:id="@+id/tutorName"
+            android:text="room description and tutor name"
+            android:textSize="15sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User name goes here"/>
+            android:textColor="#212121"/>
 
     </LinearLayout>
 
