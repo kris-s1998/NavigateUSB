@@ -12,8 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,132 +25,105 @@ public class MainActivity extends AppCompatActivity {
     EditText search_edit_text;
     RecyclerView recyclerView;
     DatabaseReference databaseReference;
-    FirebaseUser firebaseUser;
+
+    SearchAdapter searchAdapter;
+
+    ArrayList<Room> foundRooms;
 
     Button btn_map;
 
-    ArrayList<String> fullNameList;
-    ArrayList<String> userNameList;
-    ArrayList<String> profilePicList;
-
-    SearchAdapter searchAdapter;
+    ArrayList<Room> roomList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        search_edit_text = (EditText) findViewById(R.id.search_edit_text);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-
-
-        fullNameList = new ArrayList<>();
-        userNameList = new ArrayList<>();
-        profilePicList = new ArrayList<>();
-
-        btn_map = (Button)findViewById(R.id.btn_map);
+        //Go to button page
+        btn_map = findViewById(R.id.btn_map);
         btn_map.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-				/*
-				 * Intent is just like glue which helps to navigate one activity
-				 * to another.
-				 */Intent intent = new Intent(MainActivity.this,
+				Intent intent = new Intent(MainActivity.this,
                         MapActivity.class);
                 startActivity(intent); // startActivity allow you to move
             }
         });
 
 
-        search_edit_text.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!s.toString().isEmpty()){
-                    setAdapter(s.toString());
-
-                }else{
-                    fullNameList.clear();
-                    userNameList.clear();
-                    profilePicList.clear();
-                    recyclerView.removeAllViews();
-                }
-            }
-        });
-    }
-
-    private void setAdapter(final String searchedString) {
-
-
-        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+        //load entire database into a list of Room objects
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                fullNameList.clear();
-                userNameList.clear();
-                profilePicList.clear();
-                recyclerView.removeAllViews();
+                roomList.clear();
 
-                int counter = 0;
+                for(DataSnapshot d: dataSnapshot.getChildren()){
+                    Room r = d.getValue(Room.class);
 
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    String uid = snapshot.getKey();
-                    String full_name = snapshot.child("full_name").getValue(String.class);
-                    String user_name = snapshot.child("user_name").getValue(String.class);
-                    String profile_pic = snapshot.child("profile_pic").getValue(String.class);
-
-                    if (full_name.toLowerCase().contains(searchedString.toLowerCase())){
-                        fullNameList.add(full_name);
-                        userNameList.add(user_name);
-                        profilePicList.add(profile_pic);
-                        counter++;
-
-                    }else if (user_name.toLowerCase().contains(searchedString.toLowerCase())){
-                        fullNameList.add(full_name);
-                        userNameList.add(user_name);
-                        profilePicList.add(profile_pic);
-                        counter++;
-
-                    }
-
-                    if(counter ==15)
-                        break;
-
+                    roomList.add(r);
                 }
-
-                searchAdapter = new SearchAdapter(MainActivity.this, fullNameList, userNameList, profilePicList);
-                recyclerView.setAdapter(searchAdapter);
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
-            }}
-        );
+            }
+        });
+
+        search_edit_text = findViewById(R.id.search_edit_text);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+
+        foundRooms = new ArrayList<Room>();
+
+
+        search_edit_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence c, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence c, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable c) {
+                if (!c.toString().isEmpty()){
+                    setAdapter(c.toString());
+                }else{
+                    foundRooms.clear();
+                    searchAdapter.notifyDataSetChanged();
+
+                }
+            }
+        });
+
     }
 
+    public void setAdapter(String searchString) {
+        searchString = searchString.toLowerCase();
+        foundRooms.clear();
+        Room currentRoom;
+        for(int i = 0; i<roomList.size(); i++) {
+            currentRoom = roomList.get(i);
+            if (currentRoom.getNumber().contains(searchString) || currentRoom.getFirstName().toLowerCase().contains(searchString) || currentRoom.getLastName().toLowerCase().contains(searchString) ) {
+                foundRooms.add(currentRoom);
 
+            }
+        }
 
-
+        searchAdapter = new SearchAdapter(MainActivity.this, foundRooms);
+        recyclerView.setAdapter(searchAdapter);
+    }
 
 }
