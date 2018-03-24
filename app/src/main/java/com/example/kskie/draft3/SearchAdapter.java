@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
@@ -53,13 +52,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(SearchViewHolder holder, int position) {
-        holder.full_name.setText(fullNameList.get(position));
+        /*holder.full_name.setText(fullNameList.get(position));
         holder.user_name.setText(userNameList.get(position));
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.mipmap.ic_launcher_round);
 
-        Glide.with(context).setDefaultRequestOptions(requestOptions).asBitmap().load(profilePicList.get(position)).into(holder.profileImage);
+        Glide.with(context).setDefaultRequestOptions(requestOptions).asBitmap().load(profilePicList.get(position)).into(holder.profileImage);*/
     }
 
     @Override
