@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "703330677011",
-    "firebase_url": "https://draft3-eb168.firebaseio.com",
-    "project_id": "draft3-eb168",
-    "storage_bucket": "draft3-eb168.appspot.com"
+    "project_number": "155274036890",
+    "firebase_url": "https://officefinder-e61ea.firebaseio.com",
+    "project_id": "com.example.kskie.draft3",
+    "storage_bucket": "officefinder-e61ea.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:703330677011:android:2cffe3567991e68b",
+        "mobilesdk_app_id": "1:155274036890:android:2f8e8d72c92482c5",
         "android_client_info": {
           "package_name": "com.example.kskie.draft3"
         }
       },
       "oauth_client": [
         {
-          "client_id": "703330677011-gq76h1cqamisvsgf42qrs82rjv6r3598.apps.googleusercontent.com",
+          "client_id": "155274036890-lgttjb5mhmfpoh65ck9v8om5kmgosiju.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.kskie.draft3",
-            "certificate_hash": "af01ba11e46d454f322b068d31f355b37c7fa456"
+            "package_name": "team10.officefinder",
+            "certificate_hash": "1587bff55c27a3ab1ae4bcfa8563e8cd4cdf9433"
           }
         },
         {
-          "client_id": "703330677011-na5uqnnmiiumn45sjj1tlunq57vt7mtp.apps.googleusercontent.com",
+          "client_id": "155274036890-18lg6qjrave0h4ch5benp5sino92ikkk.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCJk59pHMMvgcTqsh76fKkYcbzGQWrUqiM"
+          "current_key": "AIzaSyB07Fwihmxv8Vdx8ftHObiOLy0GuiMV4s4"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "703330677011-na5uqnnmiiumn45sjj1tlunq57vt7mtp.apps.googleusercontent.com",
+              "client_id": "155274036890-18lg6qjrave0h4ch5benp5sino92ikkk.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
