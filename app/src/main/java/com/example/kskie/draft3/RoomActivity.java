@@ -60,14 +60,15 @@ public class RoomActivity extends AppCompatActivity {
         txtFile = findViewById(R.id.txtFile);
 
 
+
         databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot d: dataSnapshot.getChildren()){
-                    Room r = new Room(d.getValue(Room.class));
-                    roomList.add(r);
+                    roomList.add(d.getValue(Room.class));
+                    ;
                 }
                     populateFields();
             }
@@ -102,6 +103,7 @@ public class RoomActivity extends AppCompatActivity {
 
 
     }
+
 
     public void populateFields(){
         Bundle b = getIntent().getExtras();
