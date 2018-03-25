@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Room> foundRooms;
 
     Button btn_map;
+    Button btn_navigate;
 
     ArrayList<Room> roomList = new ArrayList<>();
 
@@ -47,11 +48,19 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-
 				Intent intent = new Intent(MainActivity.this,
                         MapActivity.class);
                 startActivity(intent); // startActivity allow you to move
+            }
+        });
+
+        //go to navigate button
+        btn_navigate = findViewById(R.id.btn_navigate);
+        btn_navigate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, NavigateActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -65,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
                 for(DataSnapshot d: dataSnapshot.getChildren()){
                     Room r = d.getValue(Room.class);
-
                     roomList.add(r);
                 }
             }
@@ -107,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
 
     }
 
