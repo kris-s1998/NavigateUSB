@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    
-    
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+
     <EditText
         android:id="@+id/search_edit_text"
         android:layout_width="match_parent"
@@ -16,8 +19,43 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content">
 
+
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:paddingHorizontal="70dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:src="@drawable/logo1" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/logo2"
+            android:padding="20dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt_favourites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Favourites"
+        android:paddingHorizontal="10dp"/>
+    <ListView
+        android:id="@+id/listFavourites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,6 +71,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Navigate"/>
+
+        <TextView
+            android:id="@+id/txtTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
 </LinearLayout>

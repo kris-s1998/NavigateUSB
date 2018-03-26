@@ -62,11 +62,6 @@
         android:layout_marginRight="15dp"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
 
-            <TextView
-                android:id="@+id/txtFile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
         </LinearLayout>
 
 

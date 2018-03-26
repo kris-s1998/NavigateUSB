@@ -1,12 +1,14 @@
 package com.example.kskie.draft3;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,19 +19,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class RoomActivity extends AppCompatActivity {
 
-    private static final String FILE_NAME = "hello.txt";
+    public static final String FILE_NAME = "testFile.txt";
+    public static final String SEPARATOR = "%";
 
     ArrayList<Room> roomList;
     ArrayList<Room> foundRooms;
@@ -42,7 +42,6 @@ public class RoomActivity extends AppCompatActivity {
     TextView tutorList;
     ImageButton btnFavourite;
 
-    TextView txtFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +56,6 @@ public class RoomActivity extends AppCompatActivity {
         tutorList = findViewById(R.id.tutor_list);
         btnFavourite = findViewById(R.id.btn_favourite);
 
-        txtFile = findViewById(R.id.txtFile);
-
-
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -68,7 +64,6 @@ public class RoomActivity extends AppCompatActivity {
 
                 for(DataSnapshot d: dataSnapshot.getChildren()){
                     roomList.add(d.getValue(Room.class));
-                    ;
                 }
                     populateFields();
             }
@@ -84,20 +79,24 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (isFavourite()) {
-                    String delLine = (thisRoom.getNumber() + "%" + thisRoom.getFirstName() + "%" + thisRoom.getLastName());
-                    removeLineFromFile(delLine);
-                    btnFavourite.setImageResource(R.drawable.star_border);
+                if (isFavourite()) { //if this room is already a favourite then delete it
+                    removeFromFavourites(); //delete room from favourites
+                    btnFavourite.setImageResource(R.drawable.star_border); //and change the image to indicate that it is no longer a favourite
                 }else {
-                    writeToFile();
-                    btnFavourite.setImageResource(R.drawable.star_filled);
+                    addToFavourites(); //else if the room is not a favourite then add it to favourites
+                    btnFavourite.setImageResource(R.drawable.star_filled); //and change the image on the button to indicate that it is now a favourite
                 }
             }
         });
 
         readFromFile();
-
-        txtFile.setText(" "+roomList.size());
+        if(roomList.size()>0){
+            if (isFavourite()) {
+                btnFavourite.setImageResource(R.drawable.star_filled);
+            }else {
+                btnFavourite.setImageResource(R.drawable.star_border);
+            }
+        }
 
 
 
@@ -140,98 +139,88 @@ public class RoomActivity extends AppCompatActivity {
 
     }
 
-    public void removeLineFromFile( String lineToRemove) {
+    public void removeFromFavourites() {
 
-
+        //remove from favourites by removing the line which refers to this room in the favourites file
+        String lineToRemove = (thisRoom.getNumber() + SEPARATOR + thisRoom.getFirstName() + SEPARATOR + thisRoom.getLastName());
+        ArrayList<String> newFavourites = new ArrayList<>(); //array of rooms which should remain favourites
         try {
+            File oldFile = getFileStreamPath(FILE_NAME);
+            InputStream inputStream = openFileInput(oldFile.getName());
 
-            File temp = new File("temp.txt");
-            File inFile = new File(FILE_NAME);
-            InputStream inputStream = openFileInput(inFile.getName());
-            OutputStream outputStream = openFileOutput(temp.getName(), Context.MODE_APPEND);
-
-            if ( inputStream != null && outputStream != null) {
+            if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
+                String receiveString = ""; //initialise string which is read from the file
 
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    if(!receiveString.trim().equals(lineToRemove)){
-                        outputStreamWriter.write(receiveString);
+                while ((receiveString = bufferedReader.readLine()) != null) { //while file has another line of text
+                    if (!receiveString.equals(lineToRemove)) { //if this line is NOT the room which needs to be removed
+                        newFavourites.add(receiveString); //then add this room to the new list of favourites
                     }
                 }
-
-                inputStream.close();
-                outputStream.close();
+                oldFile.delete(); //delete old file
+                inputStream.close(); //close the input stream
             }
-
-            if (!deleteFile(FILE_NAME)) {
-                System.out.println("Could not delete file");
-                return;
-            }
-
-            //Rename the new file to the filename the original file had.
-            if (!temp.renameTo(inFile))
-                System.out.println("Could not rename file");
-
+            writeFavouritesToFile(newFavourites); //write the new list of favourites back onto a new favourites file (with the same file name)
         }
         catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            Toast toast = Toast.makeText(RoomActivity.this, "File not found", Toast.LENGTH_SHORT);
+            toast.show();
         }
         catch (IOException ex) {
-            ex.printStackTrace();
+            Toast toast = Toast.makeText(RoomActivity.this, "File could not be read", Toast.LENGTH_SHORT);
+            toast.show();
         }
+        Toast toast = Toast.makeText(RoomActivity.this, "This room has been removed from favourites", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
-    private void writeToFile() {
+
+    private void addToFavourites() {
         try {
             String roomNum = thisRoom.getNumber();
             String firstName = thisRoom.getFirstName();
             String lastName = thisRoom.getLastName();
-            String input = (roomNum + "%" + firstName + "%" + lastName);
+            String input = (roomNum + SEPARATOR + firstName + SEPARATOR + lastName+"\n");
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput(FILE_NAME, Context.MODE_APPEND));
             outputStreamWriter.write(input);
+            outputStreamWriter.flush();
             outputStreamWriter.close();
         }
         catch (IOException e) {
+            Toast toast = Toast.makeText(RoomActivity.this, "File could not be written to", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        Toast toast = Toast.makeText(RoomActivity.this, "This room has been added to favourites", Toast.LENGTH_SHORT);
+        toast.show();
 
+    }
+
+    private void writeFavouritesToFile(ArrayList<String> favourites) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput(FILE_NAME, Context.MODE_APPEND));
+            for(int i = 0; i<favourites.size();i++){
+                String input = favourites.get(i);
+                outputStreamWriter.write(input+"\n");
+
+            }
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Toast toast = Toast.makeText(RoomActivity.this, "File could not be written to", Toast.LENGTH_SHORT);
+            toast.show();
         }
 
     }
 
     private boolean isFavourite() {
-
-        ArrayList<String> ret = new ArrayList<>();
-
-        try {
-            InputStream inputStream = openFileInput(FILE_NAME);
-
-            if ( inputStream != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    ret.add(receiveString);
-                    //stringBuilder.append(receiveString);
-                }
-
-                inputStream.close();
-                //ret = stringBuilder.toString();
-            }
-        }
-        catch (FileNotFoundException e) {
-
-        } catch (IOException e) {
-
-        }
-
-        boolean favourite = false;
-        for(int i = 0; i<ret.size(); i++){
-            String[] splitStrings = ret.get(i).trim().split("%");
-            if (splitStrings[0].equals(thisRoom.getNumber())){
-                favourite = true;
+        ArrayList<String> favourites = readFromFile(); //read list of favourites from the file
+        boolean favourite = false; //initialise favourites variable
+        for(int i = 0; i<favourites.size(); i++){ //for each item in the favourites list
+            String[] splitStrings = favourites.get(i).trim().split(SEPARATOR); //split up the text string and
+            if (splitStrings[0].equals(thisRoom.getNumber())){ //check if this room is in the list of favourites
+                favourite = true; //if yes then set to true
             }
         }
         return favourite;
@@ -241,33 +230,32 @@ public class RoomActivity extends AppCompatActivity {
 
     private ArrayList<String> readFromFile() {
 
-        ArrayList<String> ret = new ArrayList<>();
+        ArrayList<String> favourites = new ArrayList<>();
 
         try {
-            InputStream inputStream = openFileInput(FILE_NAME);
+            OutputStream outputStream = openFileOutput(FILE_NAME,MODE_APPEND); //establish output stream first in order to make sure that a favourites file is created if it does not already exist
+            InputStream inputStream = openFileInput(FILE_NAME); //create input stream to the favourites file
 
-            if ( inputStream != null ) {
+            if ( inputStream != null && outputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";
 
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    ret.add(receiveString);
-                    txtFile.append("\n"+receiveString);
-                    //stringBuilder.append(receiveString);
+                    favourites.add(receiveString);
                 }
-
                 inputStream.close();
-                //ret = stringBuilder.toString();
+                outputStream.close();
             }
         }
         catch (FileNotFoundException e) {
-
+            Toast toast = Toast.makeText(RoomActivity.this, "File not found", Toast.LENGTH_SHORT);
+            toast.show();
         } catch (IOException e) {
-
+            Toast toast = Toast.makeText(RoomActivity.this, "Could not read file", Toast.LENGTH_SHORT);
+            toast.show();
         }
-
-        return ret;
+        return favourites;
     }
 
 
