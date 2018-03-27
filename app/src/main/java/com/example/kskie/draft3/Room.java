@@ -25,9 +25,20 @@ public class Room {
         this.viaRoom = viaRoom;
     }
 
+    public Room(Room toBeCloned){
+        firstName = toBeCloned.getFirstName();
+        lastName = toBeCloned.getLastName();
+        number = toBeCloned.getNumber();
+        group = toBeCloned.getGroup();
+        level = toBeCloned.getLevel();
+        viaRoom = toBeCloned.getViaRoom();
+
+    }
+
     public String getFirstName() {
         return firstName;
     }
+
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -72,4 +83,7 @@ public class Room {
     public void setViaRoom(String viaRoom) {
         this.viaRoom = viaRoom;
     }
+
+
+
 }
