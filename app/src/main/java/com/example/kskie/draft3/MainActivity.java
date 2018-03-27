@@ -138,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
         favourites = readFromFile();
         listFavourites = findViewById(R.id.listFavourites);
 
-        //txtTest.setText(" " + favourites.size());
 
 
     }
