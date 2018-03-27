@@ -6,10 +6,35 @@
     android:layout_height="match_parent"
     tools:context="com.example.kskie.draft3.NavigateActivity">
 
-    <TextView
-        android:id="@+id/txtWrite"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edit_text_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name"
+            tools:layout_editor_absoluteX="84dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <EditText
+        android:id="@+id/edit_text_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        />
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        tools:layout_editor_absoluteX="84dp"
+        tools:layout_editor_absoluteY="46dp" />
+        <TextView
+        android:id="@+id/txtDirections"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
