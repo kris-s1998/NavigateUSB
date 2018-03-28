@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,26 +15,41 @@
             android:id="@+id/edit_text_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name"
-            tools:layout_editor_absoluteX="84dp"
-            tools:layout_editor_absoluteY="0dp" />
+            android:hint="Search Text..." />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        </android.support.v7.widget.RecyclerView>
 
         <EditText
-        android:id="@+id/edit_text_end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        tools:layout_editor_absoluteX="84dp"
-        tools:layout_editor_absoluteY="46dp" />
+            android:id="@+id/edit_text_dest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Search Text..." />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerDest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        </android.support.v7.widget.RecyclerView>
+
         <TextView
         android:id="@+id/txtDirections"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView" />
 
+        <Button
+            android:id="@+id/btn_getDirections"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show directions" />
+
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

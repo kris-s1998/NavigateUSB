@@ -8,68 +8,80 @@ import java.util.ArrayList;
 
 public class Graph {
 
-    private Node[] nodes;
+    private ArrayList<Node> nodes = new ArrayList<>();
     private int noOfNodes;
-    private Edge[] edges;
+    private ArrayList<Edge> edges = new ArrayList<>();
     private int noOfEdges;
-    public Graph(Edge[] edges) {
+
+
+    public Graph(ArrayList<Edge> edges, ArrayList<Node> nodes) {
         this.edges = edges;
+        this.nodes = nodes;
         // create all nodes ready to be updated with the edges
-        this.noOfNodes = calculateNoOfNodes(edges);
-        this.nodes = new Node[this.noOfNodes];
-        for (int n = 0; n < this.noOfNodes; n++) {
-            this.nodes[n] = new Node();
-        }
+
         // add all the edges to the nodes, each edge added to two nodes (to and from)
-        this.noOfEdges = edges.length;
+        this.noOfEdges = edges.size();
         for (int edgeToAdd = 0; edgeToAdd < this.noOfEdges; edgeToAdd++) {
-            this.nodes[edges[edgeToAdd].getFromNodeIndex()].getEdges().add(edges[edgeToAdd]);
-            this.nodes[edges[edgeToAdd].getToNodeIndex()].getEdges().add(edges[edgeToAdd]);
+            this.nodes.get(edges.get(edgeToAdd).getFromNodeIndex()).addEdge(edges.get(edgeToAdd));
+            this.nodes.get(edges.get(edgeToAdd).getToNodeIndex()).addEdge(edges.get(edgeToAdd));
         }
     }
-    private int calculateNoOfNodes(Edge[] edges) {
-        int noOfNodes = 0;
-        for (Edge e : edges) {
-            if (e.getToNodeIndex() > noOfNodes)
-                noOfNodes = e.getToNodeIndex();
-            if (e.getFromNodeIndex() > noOfNodes)
-                noOfNodes = e.getFromNodeIndex();
-        }
-        noOfNodes++;
-        return noOfNodes;
-    }
-    // next video to implement the Dijkstra algorithm !!!
-    public void calculateShortestDistances() {
+
+
+    public ArrayList<String> calculateShortestDistances(int sourceIndex, int destinationIndex) {
         // node 0 as source
-        this.nodes[0].setDistanceFromSource(0);
-        int nextNode = 0;
+        nodes.get(sourceIndex).setDistanceFromSource(0);
+        int nextNode = sourceIndex;
         // visit every node
-        for (int i = 0; i < this.nodes.length; i++) {
+        for (int i = 0; i < nodes.size(); i++) {
             // loop around the edges of current node
-            ArrayList<Edge> currentNodeEdges = this.nodes[nextNode].getEdges();
-            for (int joinedEdge = 0; joinedEdge < currentNodeEdges.size(); joinedEdge++) {
-                int neighbourIndex = currentNodeEdges.get(joinedEdge).getNeighbourIndex(nextNode);
-                // only if not visited
-                if (!this.nodes[neighbourIndex].isVisited()) {
-                    int tentative = this.nodes[nextNode].getDistanceFromSource() + currentNodeEdges.get(joinedEdge).getLength();
-                    if (tentative < nodes[neighbourIndex].getDistanceFromSource()) {
-                        nodes[neighbourIndex].setDistanceFromSource(tentative);
+            ArrayList<Edge> currentNodeEdges = nodes.get(nextNode).getEdges();
+            for (int j = 0; j < currentNodeEdges.size(); j++) {
+                int neighbourIndex = currentNodeEdges.get(j).getNeighbourIndex(nextNode);
+                if (!nodes.get(neighbourIndex).isVisited()) { //if neighbour node has not been visited then it is a potential node for the shortest route
+                    int temp = nodes.get(nextNode).getDistanceFromSource() + currentNodeEdges.get(j).getLength(); //calculate distance if this edge was to be used in the shortest route
+                    if (temp < nodes.get(neighbourIndex).getDistanceFromSource()) { //if this is the shortest way to get to the neighbour node then
+                        //nodes[neighbourIndex].path.add(currentNodeEdges.get(j));
+                        nodes.get(neighbourIndex).lastShortestEdge = currentNodeEdges.get(j);
+                        //for(int k = 0; k<nodes[nextNode].path.size(); k++){
+                        //    nodes[neighbourIndex].path.add(nodes[nextNode].path.get(k));
+                       // }
+                        nodes.get(neighbourIndex).setDistanceFromSource(temp); //update the distance from source to the new, smaller value
+
                     }
                 }
             }
-            // all neighbours checked so node visited
-            nodes[nextNode].setVisited(true);
-            // next node must be with shortest distance
-            nextNode = getNodeShortestDistanced();
+            nodes.get(nextNode).setVisited(true); // once all the neighbour nodes have been visited, set the node to visited
+            nextNode = getNodeShortestDistanced(); // next node must be with shortest distance
+
         }
+        ArrayList<String> route = new ArrayList<>();
+        ArrayList<Edge> properRoute = new ArrayList<>();
+        int i = destinationIndex;
+        do{
+            Node currentNode = nodes.get(i);
+            properRoute.add(currentNode.lastShortestEdge);
+            if(currentNode.lastShortestEdge.getFromNodeIndex() == i){
+                route.add(currentNode.lastShortestEdge.getDirectionToNode());
+                i = currentNode.lastShortestEdge.getToNodeIndex();
+
+            }else{
+                route.add(currentNode.lastShortestEdge.getDirectionFromNode());
+                i = currentNode.lastShortestEdge.getFromNodeIndex();
+            }
+
+
+
+        }while(i!=sourceIndex);
+        return route;
     }
     // now we're going to implement this method in next part !
     private int getNodeShortestDistanced() {
         int storedNodeIndex = 0;
         int storedDist = Integer.MAX_VALUE;
-        for (int i = 0; i < this.nodes.length; i++) {
-            int currentDist = this.nodes[i].getDistanceFromSource();
-            if (!this.nodes[i].isVisited() && currentDist < storedDist) {
+        for (int i = 0; i < nodes.size(); i++) {
+            int currentDist = nodes.get(i).getDistanceFromSource();
+            if (!nodes.get(i).isVisited() && currentDist < storedDist) {
                 storedDist = currentDist;
                 storedNodeIndex = i;
             }
@@ -78,20 +90,23 @@ public class Graph {
     }
     // display result
     public String printResult() {
-        String output = "Number of nodes = " + this.noOfNodes;
-        output += "\nNumber of edges = " + this.noOfEdges;
-        for (int i = 0; i < this.nodes.length; i++) {
-            output += ("\nThe shortest distance from node 0 to node " + i + " is " + nodes[i].getDistanceFromSource());
+        String output = "Number of nodes = " + nodes.size();
+        output += "\nNumber of edges = " + noOfEdges;
+        for (int i = 0; i < nodes.size(); i++) {
+            output += ("\nThe shortest distance from node " + nodes.get(8).getIndex() +" to node " + nodes.get(i).getIndex() + " is " + nodes.get(i).getDistanceFromSource());
+            if(nodes.get(i).lastShortestEdge != null)
+                output+= ("from "+ nodes.get(i).lastShortestEdge.getFromNodeIndex() +" to "+ nodes.get(i).lastShortestEdge.getToNodeIndex());
+
         }
         return(output);
     }
-    public Node[] getNodes() {
+    public ArrayList <Node> getNodes() {
         return nodes;
     }
     public int getNoOfNodes() {
         return noOfNodes;
     }
-    public Edge[] getEdges() {
+    public ArrayList <Edge> getEdges() {
         return edges;
     }
     public int getNoOfEdges() {
