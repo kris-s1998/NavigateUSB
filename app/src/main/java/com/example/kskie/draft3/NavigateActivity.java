@@ -1,15 +1,25 @@
 package com.example.kskie.draft3;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,19 +45,17 @@ public class NavigateActivity extends AppCompatActivity {
 
     ArrayList <Node> nodes = new ArrayList<>();
     ArrayList <Edge> edges = new ArrayList<>();
-    ArrayList <Node> foundNodes = new ArrayList<>();
     DatabaseReference nodesReference;
     DatabaseReference edgesReference;
     TextView txtDirections;
+    Button btnGetDirections;
 
-    EditText editTextStart;
-    EditText editTextDest;
+    NodesAdapter searchAdapter;
 
-    RecyclerView recyclerStart;
-    RecyclerView recyclerDest;
-
-    NavigateSearchAdapter searchAdapter;
-
+    AutoCompleteTextView actvStart;
+    AutoCompleteTextView actvDest;
+    ImageView imgDest;
+    ImageView imgStart;
 
 
 
@@ -57,11 +65,16 @@ public class NavigateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigate);
 
-        editTextStart = findViewById(R.id.edit_text_start);
-        editTextDest = findViewById(R.id.edit_text_dest);
+
         txtDirections = findViewById(R.id.txtDirections);
-        recyclerStart = findViewById(R.id.recyclerStart);
-        recyclerDest = findViewById(R.id.recyclerDest);
+
+
+
+        actvStart = findViewById(R.id.actvStart);
+        imgStart = findViewById(R.id.startArrow);
+        actvDest = findViewById(R.id.actvDest);
+        imgDest = findViewById(R.id.destArrow);
+        btnGetDirections = findViewById(R.id.btn_getDirections);
 
         nodesReference = FirebaseDatabase.getInstance().getReference("nodes");
         edgesReference = FirebaseDatabase.getInstance().getReference("edges");
@@ -70,23 +83,22 @@ public class NavigateActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<Node> unorderedNodes = new ArrayList<>();
-                for(DataSnapshot d: dataSnapshot.getChildren()){
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Node n = d.getValue(Node.class);
                     unorderedNodes.add(n);
                 }
 
                 //sort the nodes in order of index, so that the index value of each node matches its position in the nodes array list
                 nodes.clear();
-                for(int i = 0; i<unorderedNodes.size(); i++){
-                    for(Node n : unorderedNodes) {
-                        if (n.getIndex() == i){
+                for (int i = 0; i < unorderedNodes.size(); i++) {
+                    for (Node n : unorderedNodes) {
+                        if (n.getIndex() == i) {
                             nodes.add(n);
                             break;
                         }
 
                     }
                 }
-
 
 
             }
@@ -102,10 +114,11 @@ public class NavigateActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 edges.clear();
 
-                for(DataSnapshot d: dataSnapshot.getChildren()){
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Edge e = d.getValue(Edge.class);
                     edges.add(e);
                 }
+                setAdapter();
 
             }
 
@@ -115,29 +128,39 @@ public class NavigateActivity extends AppCompatActivity {
             }
         });
 
-        editTextStart.addTextChangedListener(new TextWatcher() {
+        btnGetDirections.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence c, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence c, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable c) {
-                if (!c.toString().isEmpty()){
-                    setSearchAdapter(c.toString());
-                    //txtDirections.append(""+nodes.size());
-                }else{
-                    foundNodes.clear();
-
-                }
+            public void onClick(View view) {
+                showDirections();
             }
         });
 
+    }
+
+        public void setAdapter(){
+        String[] locationsArray = new String[nodes.size()];
+        for(Node n:nodes){
+            locationsArray[n.getIndex()] = n.getLocation();
+        }
+        ArrayAdapter<String>adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,locationsArray);
+        actvStart.setAdapter(adapter);
+        imgStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actvStart.showDropDown();
+            }
+        });
+        ArrayAdapter<String>destAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line,locationsArray);
+        actvDest.setAdapter(destAdapter);
+        imgDest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actvDest.showDropDown();
+            }
+        });
+
+
+    }
 
 
         /*
@@ -156,32 +179,52 @@ public class NavigateActivity extends AppCompatActivity {
         edges.add(new Edge(8, 9, 1,"",""));
         edges.add( new Edge(10, 0, 3,"",""));
 */
-     //   Graph g = new Graph(edges, nodes);
-    //    ArrayList<String> route = g.calculateShortestDistances(8,1);
-    //    for(int i = route.size() - 1; i>-1 ; i--){
-     //       txtDirections.append("\n"+route.get(i));
-     //   }
-     //   txtDirections.append(g.printResult()); // let's try it !
-    }
+       public void showDirections() {
+           Node startNode = new Node();
+           Node destinationNode = new Node();
+           boolean foundStart = false;
+           boolean foundDestination = false;
+           String start = actvStart.getText().toString();
+           String destination = actvDest.getText().toString();
+           if(start.isEmpty() || destination.isEmpty()){
+               Toast toast = Toast.makeText(NavigateActivity.this, "Starting point and destination cannot be empty.", Toast.LENGTH_SHORT);
+               toast.show();
+           }else {
+               for (Node s:nodes){
+                   if(s.getLocation().toLowerCase().equals(start.toLowerCase().trim())){
+                       startNode = s;
+                       foundStart = true;
+                   }
+               }
+               if (foundStart){
+                   for(Node d:nodes){
+                       if(d.getLocation().toLowerCase().equals(destination.toLowerCase().trim())){
+                           destinationNode = d;
+                           foundDestination = true;
+                       }
+
+                   }
+                   if(foundDestination) {
+                       Graph g = new Graph(edges, nodes);
+                       ArrayList<String> route = g.calculateShortestDistances(startNode.getIndex(), destinationNode.getIndex());
+                       for (int i = route.size() - 1; i > -1; i--) {
+                           txtDirections.append("" + (i + 1) + ".    " + route.get(i));
+                       }
+                   }else{
+                       Toast toast = Toast.makeText(NavigateActivity.this, "Destination not found.", Toast.LENGTH_SHORT);
+                       toast.show();
+                   }
+               }else{
+                   Toast toast = Toast.makeText(NavigateActivity.this, "Starting point not found.", Toast.LENGTH_SHORT);
+                   toast.show();
+               }
+
+           }
+       }
 
 
-    public void setSearchAdapter( String searchString) {
-        searchString = searchString.toLowerCase();
-        foundNodes.clear();
-        Node currentNode;
-        for(int i = 0; i<nodes.size(); i++) {
-            currentNode = nodes.get(i);
-
-                if (currentNode.getLocation().toLowerCase().contains(searchString) ) {
-                    foundNodes.add(currentNode);
-                }
-
-        }
 
 
-        searchAdapter = new NavigateSearchAdapter(NavigateActivity.this, foundNodes);
-        recyclerStart.setAdapter(searchAdapter);
-    }
 
 
 

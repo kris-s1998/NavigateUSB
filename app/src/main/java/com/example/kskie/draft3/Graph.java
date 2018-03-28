@@ -88,18 +88,7 @@ public class Graph {
         }
         return storedNodeIndex;
     }
-    // display result
-    public String printResult() {
-        String output = "Number of nodes = " + nodes.size();
-        output += "\nNumber of edges = " + noOfEdges;
-        for (int i = 0; i < nodes.size(); i++) {
-            output += ("\nThe shortest distance from node " + nodes.get(8).getIndex() +" to node " + nodes.get(i).getIndex() + " is " + nodes.get(i).getDistanceFromSource());
-            if(nodes.get(i).lastShortestEdge != null)
-                output+= ("from "+ nodes.get(i).lastShortestEdge.getFromNodeIndex() +" to "+ nodes.get(i).lastShortestEdge.getToNodeIndex());
 
-        }
-        return(output);
-    }
     public ArrayList <Node> getNodes() {
         return nodes;
     }
