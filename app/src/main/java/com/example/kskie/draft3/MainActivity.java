@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference("rooms");
 
         //Go to button page
         btn_map = findViewById(R.id.btn_map);
@@ -138,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
         favourites = readFromFile();
         listFavourites = findViewById(R.id.listFavourites);
 
-        //txtTest.setText(" " + favourites.size());
 
 
     }
@@ -187,19 +187,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void setAdapter(String searchString) {
         searchString = searchString.toLowerCase();
+        String[] splitSearchString = searchString.split(" ");
         foundRooms.clear();
         Room currentRoom;
         for(int i = 0; i<roomList.size(); i++) {
             currentRoom = roomList.get(i);
-            if (currentRoom.getNumber().contains(searchString) || currentRoom.getFirstName().toLowerCase().contains(searchString) || currentRoom.getLastName().toLowerCase().contains(searchString) ) {
-                foundRooms.add(currentRoom);
+            for(int j = 0; j<splitSearchString.length; j++){
+                if (    currentRoom.getNumber().contains(splitSearchString[j]) ||
+                        currentRoom.getFirstName().toLowerCase().contains(splitSearchString[j])
+                        || currentRoom.getLastName().toLowerCase().contains(splitSearchString[j]) ) {
+                    foundRooms.add(currentRoom);
 
+                }
             }
         }
 
         searchAdapter = new SearchAdapter(MainActivity.this, foundRooms);
         recyclerView.setAdapter(searchAdapter);
-
     }
 
     private ArrayList<String> readFromFile() {

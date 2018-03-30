@@ -57,7 +57,7 @@ public class RoomActivity extends AppCompatActivity {
         btnFavourite = findViewById(R.id.btn_favourite);
 
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference("rooms");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
