@@ -3,80 +3,111 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id = "@+id/mainFrame"
     android:layout_height="match_parent"
-    tools:context="com.example.kskie.draft3.NavigateActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.88"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/topBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/startIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toLeftOf="@id/actvStart"
+                    android:layout_weight="0.05"
+                    app:srcCompat="@drawable/current_location" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/actvStart"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_weight="0.9"
+                    android:hint="Starting point..." />
+
+                <ImageView
+                    android:id="@+id/startArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_toRightOf="@+id/actvStart"
+                    android:layout_weight="0.05"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/drop_down_arrow" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/middleBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/destinationIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_toLeftOf="@id/actvDest"
+                    android:layout_weight="0.05"
+                    app:srcCompat="@drawable/destination_location" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/actvDest"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_weight="0.9"
+                    android:hint="Destination..." />
+
+                <ImageView
+                    android:id="@+id/destArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_toRightOf="@id/actvDest"
+                    android:layout_weight="0.05"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/drop_down_arrow" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_getDirections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/middleBar"
+                android:text="Show directions" />
+
+            <TextView
+                android:id="@+id/txtDirections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btn_getDirections" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
+        android:id="@+id/bottomMenuBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal"
-        android:weightSum="5"
-        android:layout_margin="10dp">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/startIcon"
-            android:src="@drawable/current_location"/>
-
-        <AutoCompleteTextView
-            android:id="@+id/actvStart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Starting point..."
-            android:layout_weight="5"
-            />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:id="@+id/startArrow"
-        android:padding="5dp"
-        android:src="@drawable/drop_down_arrow"
-        android:layout_weight="1"/>
-</LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="5"
-        android:layout_margin="10dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/destinationIcon"
-            android:src="@drawable/destination_location"/>
-
-        <AutoCompleteTextView
-            android:id="@+id/actvDest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Destination..."
-            android:layout_weight="5"
-            />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/destArrow"
-            android:padding="5dp"
-            android:src="@drawable/drop_down_arrow"
-            android:layout_weight="1"/>
+        android:layout_weight="0.12">
     </LinearLayout>
-
-
-
-
-
-        <Button
-            android:id="@+id/btn_getDirections"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Show directions" />
-
-    <TextView
-        android:id="@+id/txtDirections"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -3,6 +3,9 @@ package com.example.kskie.draft3;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -41,7 +44,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class NavigateActivity extends AppCompatActivity {
+public class NavigateActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener{
+    public static int activityNum = 3;
 
     ArrayList <Node> nodes = new ArrayList<>();
     ArrayList <Edge> edges = new ArrayList<>();
@@ -68,7 +72,11 @@ public class NavigateActivity extends AppCompatActivity {
 
         txtDirections = findViewById(R.id.txtDirections);
 
-
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        MenuFragment menuFragment = MenuFragment.newInstance(activityNum);
+        fragmentTransaction.add(R.id.bottomMenuBar, menuFragment);
+        fragmentTransaction.commit();
 
         actvStart = findViewById(R.id.actvStart);
         imgStart = findViewById(R.id.startArrow);
@@ -162,24 +170,13 @@ public class NavigateActivity extends AppCompatActivity {
 
     }
 
-
-        /*
-
-        edges.add(new Edge(1, 2, 2, "Turn to the right to find the cafe in the corner.", "Walk straight to the foyer."));
-        edges.add(new Edge(1, 3, 1, "Walk straight to the ground floor stairs ahead.", "From the stairs, turn left to the foyer."));
-        edges.add(new Edge(3, 2, 2, "Sharp turn left from the stairs and walk straight past reception.", "Walk straight from the cafe to find the stairs on the right."));
-        edges.add(new Edge(3, 4, 1, "Walk up the stairs to the first floor","Walk down the stairs to the ground floor"));
-        edges.add(new Edge(4, 6, 2,"From the stairs, walk straight down to the corridor","Walk straight ahead from the corridor to the stairs" ));
-        edges.add(new Edge(6, 5, 2, "The door to the lecture theatre is in the left corner","Walk straight to the corridor opposite the lecture theatre."));
-        edges.add(new Edge(6, 7, 1, "The room is directly opposite the stairs on the first floor", "The corridor is directly outside the room"));
-        edges.add(new Edge(6, 8, 3, "Room 1.025 is in the far left corner", "Walk left to the first floor corridor"));
-        edges.add(new Edge(6, 9, 1, "Room 1.025a is on the left, adjacent to room 1.025b.","Walk straight ahead to the first floor corridor"));
-        edges.add(new Edge(6, 10, 2,"Turn right and walk down the end of the corridor to find room 1.025b at the end",""));
-        edges.add(new Edge(10, 9, 1,"",""));
-        edges.add(new Edge(8, 9, 1,"",""));
-        edges.add( new Edge(10, 0, 3,"",""));
-*/
        public void showDirections() {
+           for(Node n:nodes){ //reset all the nodes back to default
+               n.lastShortestEdge=null; //remove all the last shortest edges for each node because the source node may have changed from the previous one
+               n.setVisited(false); //reset all nodes' isVisited field
+               n.setDistanceFromSource(Integer.MAX_VALUE); //reset all nodes' distance from source fields in case the source node has changed
+           }
+           txtDirections.setText("");
            Node startNode = new Node();
            Node destinationNode = new Node();
            boolean foundStart = false;
@@ -207,8 +204,10 @@ public class NavigateActivity extends AppCompatActivity {
                    if(foundDestination) {
                        Graph g = new Graph(edges, nodes);
                        ArrayList<String> route = g.calculateShortestDistances(startNode.getIndex(), destinationNode.getIndex());
+                       int counter = 1;
                        for (int i = route.size() - 1; i > -1; i--) {
-                           txtDirections.append("" + (i + 1) + ".    " + route.get(i));
+                           txtDirections.append("" + counter + ".    " + route.get(i)+"\n");
+                           counter++;
                        }
                    }else{
                        Toast toast = Toast.makeText(NavigateActivity.this, "Destination not found.", Toast.LENGTH_SHORT);
@@ -223,11 +222,7 @@ public class NavigateActivity extends AppCompatActivity {
        }
 
 
-
-
-
-
-
-
-
+    @Override
+    public void onFragmentInteraction(Uri uri){
+    }
 }
