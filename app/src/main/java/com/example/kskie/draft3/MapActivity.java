@@ -1,8 +1,12 @@
 package com.example.kskie.draft3;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -17,7 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener {
+    public static int activityNum = 2;
 
     StorageReference storageRef;
     TouchImageView imageView;
@@ -35,6 +40,12 @@ public class MapActivity extends AppCompatActivity {
         imageView = findViewById(R.id.image);
         storageRef = FirebaseStorage.getInstance().getReference();
         loading = findViewById(R.id.loadingBar);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        MenuFragment menuFragment = MenuFragment.newInstance(activityNum);
+        fragmentTransaction.add(R.id.bottomMenuBar, menuFragment);
+        fragmentTransaction.commit();
 
         //need to make portable
         StorageReference floor1 = storageRef.child("floorMaps/floor1.png");
@@ -86,4 +97,8 @@ public class MapActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        //
+    }
 }
