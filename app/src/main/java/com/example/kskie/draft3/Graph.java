@@ -39,7 +39,7 @@ public class Graph {
             for (int j = 0; j < currentNodeEdges.size(); j++) {
                 int neighbourIndex = currentNodeEdges.get(j).getNeighbourIndex(nextNode);
                 if (!nodes.get(neighbourIndex).isVisited()) { //if neighbour node has not been visited then it is a potential node for the shortest route
-                    int temp = nodes.get(nextNode).getDistanceFromSource() + currentNodeEdges.get(j).getLength(); //calculate distance if this edge was to be used in the shortest route
+                    double temp = nodes.get(nextNode).getDistanceFromSource() + currentNodeEdges.get(j).getLength(); //calculate distance if this edge was to be used in the shortest route
                     if (temp < nodes.get(neighbourIndex).getDistanceFromSource()) { //if this is the shortest way to get to the neighbour node then
                         //nodes[neighbourIndex].path.add(currentNodeEdges.get(j));
                         nodes.get(neighbourIndex).lastShortestEdge = currentNodeEdges.get(j);
@@ -78,9 +78,9 @@ public class Graph {
     // now we're going to implement this method in next part !
     private int getNodeShortestDistanced() {
         int storedNodeIndex = 0;
-        int storedDist = Integer.MAX_VALUE;
+        double storedDist = Integer.MAX_VALUE;
         for (int i = 0; i < nodes.size(); i++) {
-            int currentDist = nodes.get(i).getDistanceFromSource();
+            double currentDist = nodes.get(i).getDistanceFromSource();
             if (!nodes.get(i).isVisited() && currentDist < storedDist) {
                 storedDist = currentDist;
                 storedNodeIndex = i;
