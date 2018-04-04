@@ -28,7 +28,8 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
     TouchImageView imageView;
     ProgressBar loading;
     Button up, down;
-    int floorNo = 1;
+    //not portable really (needs file input)
+    int floorNo = 0;
     int maxFloor = 5;
     int minFloor = 1;
 
@@ -50,8 +51,6 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
         //need to make portable
         StorageReference floor1 = storageRef.child("floorMaps/floor1.png");
 
-
-
         Glide.with(MapActivity.this)
                 .using(new FirebaseImageLoader())
                 .load(floor1)
@@ -63,7 +62,7 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
         StorageReference floor4 = storageRef.child("floorMaps/floor4.png");
         StorageReference floor5 = storageRef.child("floorMaps/floor5.png");
         StorageReference floor6 = storageRef.child("floorMaps/floor6.png");
-        final List<StorageReference> floors = new ArrayList<StorageReference>();
+        final List<StorageReference> floors = new ArrayList<>();
         floors.addAll(Arrays.asList(floor1, floor2, floor3, floor4, floor5, floor6));
 
 
