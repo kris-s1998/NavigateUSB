@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Node {
 
-    private int distanceFromSource = Integer.MAX_VALUE;
+    private double distanceFromSource = Integer.MAX_VALUE;
     private boolean visited;
     private ArrayList<Edge> edges = new ArrayList<>(); // now we must create edges
     public ArrayList<Edge> path = new ArrayList<>();
@@ -44,10 +44,10 @@ public class Node {
         this.index = index;
     }
 
-    public int getDistanceFromSource() {
+    public double getDistanceFromSource() {
         return distanceFromSource;
     }
-    public void setDistanceFromSource(int distanceFromSource) {
+    public void setDistanceFromSource(double distanceFromSource) {
         this.distanceFromSource = distanceFromSource;
     }
     public boolean isVisited() {

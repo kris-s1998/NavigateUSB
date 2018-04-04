@@ -10,7 +10,7 @@ public class Edge {
     private String directionFromNode;
     private String directionToNode;
     private int toNodeIndex;
-    private int length;
+    private double length;
 
     public Edge(){
 
@@ -31,7 +31,7 @@ public class Edge {
     public int getToNodeIndex() {
         return toNodeIndex;
     }
-    public int getLength() {
+    public double getLength() {
         return length;
     }
     // determines the neighbouring node of a supplied node, based on the two nodes connected by this edge

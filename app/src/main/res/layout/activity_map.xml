@@ -17,7 +17,6 @@
             android:layout_height="match_parent"
             android:id="@+id/image"/>
 
-    />
 
     <ProgressBar
         android:id="@+id/loadingBar"
@@ -26,28 +25,30 @@
         />
 
 
-    <Button
-        android:id="@+id/btn_down"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/btn_up"
-        app:layout_constraintTop_toTopOf="parent" />
-
         <Button
-            android:id="@+id/btn_up"
+            android:id="@+id/btn_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Button"
+            android:text="Down"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_down"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_up"
+            app:layout_constraintVertical_bias="0.0"
+            android:drawableRight="@drawable/arrow_down"/>
+
+        <Button
+            android:id="@+id/btn_up"
+            android:text="Up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:drawableRight="@drawable/arrow_up"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/btn_down"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
     <LinearLayout
