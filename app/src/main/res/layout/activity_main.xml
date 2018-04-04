@@ -6,13 +6,22 @@
     android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.88"
+        >
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
     <EditText
         android:id="@+id/search_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search Text..."
+        android:hint="Search for a room or tutor..."
         android:layout_margin="10dp"
         />
 
@@ -60,17 +69,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-         <Button
-            android:id="@+id/btn_map"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:text="Map"
-            />
-        <Button
-            android:id="@+id/btn_navigate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Navigate"/>
 
         <TextView
             android:id="@+id/txtTest"
@@ -78,6 +76,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
+    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:id="@+id/bottomMenuBar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.12">
     </LinearLayout>
 
 </LinearLayout>

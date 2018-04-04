@@ -2,6 +2,9 @@ package com.example.kskie.draft3;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -34,24 +37,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener{
 
+    public static int activityNum = 1;
 
     EditText search_edit_text;
     RecyclerView recyclerView;
     ListView listFavourites;
     DatabaseReference databaseReference;
 
-    TextView txtTest;
-
     SearchAdapter searchAdapter;
     public FavouritesAdapter adapter;
 
     ArrayList<Room> foundRooms;
     ArrayList<String> favourites;
-
-    Button btn_map;
-    Button btn_navigate;
 
     ArrayList<Room> roomList = new ArrayList<>();
 
@@ -60,29 +59,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        MenuFragment menuFragment = MenuFragment.newInstance(activityNum);
+        fragmentTransaction.add(R.id.bottomMenuBar, menuFragment);
+        fragmentTransaction.commit();
+
         databaseReference = FirebaseDatabase.getInstance().getReference("rooms");
 
-        //Go to button page
-        btn_map = findViewById(R.id.btn_map);
-        btn_map.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this,
-                        MapActivity.class);
-                startActivity(intent); // startActivity allow you to move
-            }
-        });
-
-        //go to navigate button
-        btn_navigate = findViewById(R.id.btn_navigate);
-        btn_navigate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, NavigateActivity.class);
-                startActivity(intent);
-            }
-        });
 
 
 
@@ -238,4 +222,8 @@ public class MainActivity extends AppCompatActivity {
         return favourites;
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        //
+    }
 }
