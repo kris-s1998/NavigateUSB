@@ -3,50 +3,45 @@ package com.example.kskie.draft3;
 import java.util.ArrayList;
 
 /**
- * Created by kskie on 27/03/2018.
+ * This class is used to represent the relationship between all the locations in the building and the directions between them.
+ * All the nodes and edges in the building are added to a graph which is used to calculate the shortest route between two locations in the building.
+ *
+ * Created by Kris Skierniewski on 27/03/2018.
  */
 
 public class Graph {
 
-    private ArrayList<Node> nodes = new ArrayList<>();
-    private int noOfNodes;
-    private ArrayList<Edge> edges = new ArrayList<>();
-    private int noOfEdges;
+    private ArrayList<Node> nodes = new ArrayList<>(); //a list of all the nodes (locations) in the building
+    private ArrayList<Edge> edges = new ArrayList<>(); //a list of all the edges (connections between the nodes) in the building
+    private int noOfEdges; //the total number of edges
 
-
+    //the constructor initialises all the variables
     public Graph(ArrayList<Edge> edges, ArrayList<Node> nodes) {
-        this.edges = edges;
-        this.nodes = nodes;
-        // create all nodes ready to be updated with the edges
-
-        // add all the edges to the nodes, each edge added to two nodes (to and from)
-        this.noOfEdges = edges.size();
-        for (int edgeToAdd = 0; edgeToAdd < this.noOfEdges; edgeToAdd++) {
-            this.nodes.get(edges.get(edgeToAdd).getFromNodeIndex()).addEdge(edges.get(edgeToAdd));
+        this.edges = edges; //initialise edges list
+        this.nodes = nodes; //initialise nodes list
+        this.noOfEdges = edges.size(); //initialise number of edges
+        for (int edgeToAdd = 0; edgeToAdd < this.noOfEdges; edgeToAdd++) { //add each edge to the corresponding nodes (each node has a list of edges connected to it)
+            this.nodes.get(edges.get(edgeToAdd).getFromNodeIndex()).addEdge(edges.get(edgeToAdd)); //each edge is added to 2 nodes because every edge has a node at each end
             this.nodes.get(edges.get(edgeToAdd).getToNodeIndex()).addEdge(edges.get(edgeToAdd));
         }
     }
 
-
+    /*this method calculates the shortest distance from the source node to every node in the graph, adding the last shortest edge to each node
+      then, it backtracks from the destination node, adding the last shortest node at each stage to a list of edges called "route", this forms
+      the shortest route from the source node to the destination node
+     */
     public ArrayList<String> calculateShortestDistances(int sourceIndex, int destinationIndex) {
-        // node 0 as source
-        nodes.get(sourceIndex).setDistanceFromSource(0);
-        int nextNode = sourceIndex;
-        // visit every node
-        for (int i = 0; i < nodes.size(); i++) {
-            // loop around the edges of current node
-            ArrayList<Edge> currentNodeEdges = nodes.get(nextNode).getEdges();
-            for (int j = 0; j < currentNodeEdges.size(); j++) {
-                int neighbourIndex = currentNodeEdges.get(j).getNeighbourIndex(nextNode);
-                if (!nodes.get(neighbourIndex).isVisited()) { //if neighbour node has not been visited then it is a potential node for the shortest route
-                    double temp = nodes.get(nextNode).getDistanceFromSource() + currentNodeEdges.get(j).getLength(); //calculate distance if this edge was to be used in the shortest route
-                    if (temp < nodes.get(neighbourIndex).getDistanceFromSource()) { //if this is the shortest way to get to the neighbour node then
-                        //nodes[neighbourIndex].path.add(currentNodeEdges.get(j));
-                        nodes.get(neighbourIndex).lastShortestEdge = currentNodeEdges.get(j);
-                        //for(int k = 0; k<nodes[nextNode].path.size(); k++){
-                        //    nodes[neighbourIndex].path.add(nodes[nextNode].path.get(k));
-                       // }
-                        nodes.get(neighbourIndex).setDistanceFromSource(temp); //update the distance from source to the new, smaller value
+        nodes.get(sourceIndex).setDistanceFromSource(0); //initialise the source node, distance from source = 0 because it is the source node
+        int nextNode = sourceIndex; //set nextNode to be the source node so that all of the source's edges are explored
+        for (int i = 0; i < nodes.size(); i++){ //loop through every node in the building (must visit every node)
+            ArrayList<Edge> currentNodeEdges = nodes.get(nextNode).getEdges(); //retrieve a list of all the edges of the current node
+            for (int j = 0; j < currentNodeEdges.size(); j++){ //loop through every edge of the current node (must check every edge)
+                int neighbourNodeIndex = currentNodeEdges.get(j).getNeighbourNodeIndex(nextNode); //get the index of the neighbour node (i.e. not the node currently being visited)
+                if (!nodes.get(neighbourNodeIndex).isVisited()){ //if neighbour node has not been visited then it needs to be checked
+                    double temp = nodes.get(nextNode).getDistanceFromSource() + currentNodeEdges.get(j).getLength(); //calculate distance to the neighbour node (distance from source + length of the current edge)
+                    if (temp < nodes.get(neighbourNodeIndex).getDistanceFromSource()){ //if this is the shortest way to get to the neighbour node
+                        nodes.get(neighbourNodeIndex).lastShortestEdge = currentNodeEdges.get(j); //then set the current edge as the lastShortestEdge of the neighbour node
+                        nodes.get(neighbourNodeIndex).setDistanceFromSource(temp); //update the distance from source to the new, smaller value
 
                     }
                 }
@@ -92,14 +87,8 @@ public class Graph {
     public ArrayList <Node> getNodes() {
         return nodes;
     }
-    public int getNoOfNodes() {
-        return noOfNodes;
-    }
     public ArrayList <Edge> getEdges() {
         return edges;
-    }
-    public int getNoOfEdges() {
-        return noOfEdges;
     }
 
 }

@@ -2,8 +2,6 @@ package com.example.kskie.draft3;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,9 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import java.util.HashMap;
-import java.util.Vector;
 
 
 /**
@@ -82,11 +77,11 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         btnNavigate.setOnClickListener(this);
         btnSettings = v.findViewById(R.id.btn_settings);
         btnSettings.setOnClickListener(this);
-        if(activityNum == NavigateActivity.activityNum){
+        if(activityNum == NavigateActivity.ACTIVITY_NUM){
             Drawable icon = getResources().getDrawable(R.drawable.navigate_active);
             btnNavigate.setTextColor(getResources().getColor(R.color.colorPrimary));
             btnNavigate.setCompoundDrawablesWithIntrinsicBounds(null,icon,null,null);
-        }else if (activityNum == MainActivity.activityNum) {
+        }else if (activityNum == MainActivity.ACTIVITY_NUM) {
             Drawable icon = getResources().getDrawable(R.drawable.home_active);
             btnHome.setTextColor(getResources().getColor(R.color.colorPrimary));
             btnHome.setCompoundDrawablesWithIntrinsicBounds(null,icon,null,null);
@@ -123,13 +118,13 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == btnHome.getId() && activityNum != MainActivity.activityNum){
+        if(view.getId() == btnHome.getId() && activityNum != MainActivity.ACTIVITY_NUM){
             Intent intent = new Intent(this.getContext(), MainActivity.class);
             startActivity(intent);
         }else if(view.getId() == btnMap.getId() && activityNum != MapActivity.activityNum){
             Intent intent = new Intent(this.getContext(), MapActivity.class);
             startActivity(intent);
-        }else if(view.getId() == btnNavigate.getId() && activityNum != NavigateActivity.activityNum){
+        }else if(view.getId() == btnNavigate.getId() && activityNum != NavigateActivity.ACTIVITY_NUM){
             Intent intent = new Intent(this.getContext(), NavigateActivity.class);
             startActivity(intent);
         }else if(view.getId() == btnSettings.getId() && activityNum != SettingsActivity.activityNum){

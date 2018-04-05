@@ -6,8 +6,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import static com.example.kskie.draft3.NavigateActivity.activityNum;
-
 public class SettingsActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener{
 
     public static int activityNum = 4;
