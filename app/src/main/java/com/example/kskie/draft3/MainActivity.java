@@ -35,6 +35,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+/**
+ * This is the main activity of the app: the home page. When the app is first launched, this activity appears.
+ * It contains a search bar, a list of favourite rooms and a twitter feed of tweets relating to the building.
+ *
+ * Created by Kris Skierniewski on 28/02/2018.
+ */
 
 public class MainActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener{
 
@@ -63,9 +69,9 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(!isNetworkAvailable()){
+        if(!isNetworkAvailable()){ //checks that the device has an internet connection, if not
             Toast toast = Toast.makeText(MainActivity.this, "Internet connection not found. You must be connected to the internet to use the app!", Toast.LENGTH_LONG);
-            toast.show();
+            toast.show(); //then display error message for the user
         }
 
         //the following lines of code add the menu fragment to the activity
@@ -93,20 +99,22 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast toast = Toast.makeText(MainActivity.this, "Unable to read database", Toast.LENGTH_SHORT);
-                toast.show();
+                toast.show(); //if database cannot be read, display error message
             }
         });
 
+        //the following code initialises the interface elements on the home screen
         searchEditText = findViewById(R.id.search_edit_text);
         searchRecyclerView = findViewById(R.id.recyclerView);
+        favouritesListView = findViewById(R.id.listFavourites);
         searchRecyclerView.setHasFixedSize(true);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         searchRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
-        foundRooms = new ArrayList<>();
-        roomList = new ArrayList<>();
+        roomList = new ArrayList<>(); //instantiate list of all rooms
+        foundRooms = new ArrayList<>(); //in list of rooms which match the search criteria
 
-
+        //add a listener to the search box
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence c, int i, int i1, int i2) {
@@ -119,129 +127,128 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
             }
 
             @Override
-            public void afterTextChanged(Editable c) {
-                if (!c.toString().isEmpty()){
-                    setAdapter(c.toString());
+            public void afterTextChanged(Editable c) { //when text in the search box has been changed
+                if (!c.toString().isEmpty()){ //if search string is not empty then
+                    setSearchAdapter(c.toString()); //find results which match the search string and display them in a list
                 }else{
-                    foundRooms.clear();
-                    searchAdapter.notifyDataSetChanged();
-
+                    foundRooms.clear(); //else clear the list of rooms found
+                    searchAdapter.notifyDataSetChanged(); //and clear the list of displayed search results
                 }
             }
         });
-        favourites = readFromFile();
-
-        favouritesListView = findViewById(R.id.listFavourites);
-
-
-
+        favourites = readFromFile(); //initialise the favourites list with a list of strings read from the favourites file
     }
 
+    //this method checks if the device is connected to the internet
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo(); //retrieve information about the network connection
+        boolean isConnected = (activeNetworkInfo != null && activeNetworkInfo.isConnected());
+        return isConnected; //returns true if there is an active network connection that is connected to the internet, else false
     }
 
 
     @Override
     protected void onResume() {
-        super.onResume();
+        super.onResume(); //when the user returns to this activity from another activity or another app then
         if(favourites != null && adapter != null) //if not launching activity for the first time
             favourites = readFromFile(); //read the favourites file to make sure list of favourites is up to date
             setFavouritesAdapter(); //update the list view of favourites
     }
 
+    //this method displays the user's favourite rooms in a list, it takes the favourites (String) list that has been read from the file
+    //and finds the corresponding Room objects from the database and displays them for the user in a list
     public void setFavouritesAdapter(){
-        ArrayList<Room> favouriteRooms = new ArrayList<>();
-
-        foundRooms.clear();
-        Room currentRoom;
-        for(int i = 0; i<favourites.size(); i++){
-            for(int j = 0; j<roomList.size();j++){
-                currentRoom = roomList.get(j);
-                String[] splitStrings = favourites.get(i).split(RoomActivity.SEPARATOR);
-                if ( splitStrings[0].equals(currentRoom.getNumber()) && splitStrings[1].equals(currentRoom.getFirstName()) && splitStrings[2].equals(currentRoom.getLastName()) ){
-                    favouriteRooms.add(roomList.get(j));
+        ArrayList<Room> favouriteRooms = new ArrayList<>(); //declare and instantiate a list of the user's favourite rooms
+        foundRooms.clear(); //clear list of rooms that match the criteria
+        Room currentRoom; //the room currently being checked against the criteria
+        for(int i = 0; i<favourites.size(); i++){ //for each string in the favourites list
+            for(int j = 0; j<roomList.size();j++){ //check each room from the database
+                currentRoom = roomList.get(j); //get the current room
+                String[] splitStrings = favourites.get(i).split(RoomActivity.SEPARATOR); //divide the string (from the favourites list) into 3 parts: room number,first name and last name
+                if ( splitStrings[0].equals(currentRoom.getNumber()) && splitStrings[1].equals(currentRoom.getFirstName()) && splitStrings[2].equals(currentRoom.getLastName()) ){ //if the current room matches the room number, first name and last name
+                    favouriteRooms.add(roomList.get(j)); //then add current room the list of favourite rooms
+                    break; //the room which corresponds to the current favourites string has been found so break out of the loop and move onto the next one
                 }
             }
         }
-
-        adapter = new FavouritesAdapter(this,favouriteRooms);
+        adapter = new FavouritesAdapter(this,favouriteRooms); //create a new instance of favrourites adapter, with the list of favourite rooms
+        //the favourites list view is inside a scroll view therefore the next lines of code are required to adjust the height of the list view and make it display all of the found rooms
         int favouritesWidth = View.MeasureSpec.makeMeasureSpec(favouritesListView.getWidth(), View.MeasureSpec.UNSPECIFIED);
         int favouritesHeight = 0;
         View view = null;
         for (int i = 0; i < adapter.getCount(); i++) {
             view = adapter.getView(i, view, favouritesListView);
-            if (i == 0)
+            if (i == 0) {
                 view.setLayoutParams(new ViewGroup.LayoutParams(favouritesWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
             view.measure(favouritesWidth, View.MeasureSpec.UNSPECIFIED);
             favouritesHeight += view.getMeasuredHeight();
         }
         ViewGroup.LayoutParams layoutParams = favouritesListView.getLayoutParams();
         layoutParams.height = favouritesHeight+(favouritesListView.getDividerHeight()*(adapter.getCount()-1));
-        favouritesListView.setLayoutParams(layoutParams);
-        favouritesListView.setAdapter(adapter);
+        favouritesListView.setLayoutParams(layoutParams); //set size parameters for the adapter and
+        favouritesListView.setAdapter(adapter); //add the adapter to the favourites list view
         favouritesListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Room clickedRoom = (Room)parent.getItemAtPosition(position);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) { //when item is selected from the favourites list
+                Room clickedRoom = (Room)parent.getItemAtPosition(position); //retrieve the clicked room
                 Context context = view.getContext();
-                Intent intent = new Intent(context, RoomActivity.class);
+                Intent intent = new Intent(context, RoomActivity.class); //information about the room will be shown in the room activity
                 Bundle b = new Bundle();
+                //put information about the clicked room in a bundle
                 b.putString(ROOM_NO,clickedRoom.getNumber());
                 b.putString(FIRST_NAME,clickedRoom.getFirstName());
                 b.putString(LAST_NAME,clickedRoom.getLastName());
                 intent.putExtras(b);
-                 context.startActivity(intent);
+                //and start the room activity, passing on the information about the room
+                context.startActivity(intent);
             }
         });
-
-
     }
 
-    public void setAdapter(String searchString) {
-        searchString = searchString.toLowerCase();
-        String[] splitSearchString = searchString.split(" ");
-        foundRooms.clear();
-        Room currentRoom;
-        for(int i = 0; i<roomList.size(); i++) {
+    //this method displays the search results in a recycler view
+    public void setSearchAdapter(String searchString) {
+        searchString = searchString.toLowerCase(); //convert search string to lowercase in case user has not used the correct case
+        String[] splitSearchString = searchString.split(" "); //divide the search string into parts
+        foundRooms.clear(); //clear list of previous search results
+        Room currentRoom; //this is the room currently being checked
+        for(int i = 0; i<roomList.size(); i++) { //for each room in the list of all rooms
             currentRoom = roomList.get(i);
-            for(int j = 0; j<splitSearchString.length; j++){
-                if (    currentRoom.getNumber().contains(splitSearchString[j]) ||
-                        currentRoom.getFirstName().toLowerCase().contains(splitSearchString[j])
-                        || currentRoom.getLastName().toLowerCase().contains(splitSearchString[j]) ) {
-                    foundRooms.add(currentRoom);
-
+            for(int j = 0; j<splitSearchString.length; j++){ //check if any of the parts of the search string match
+                //either the room number, first name or last name of the current room
+                if (currentRoom.getNumber().contains(splitSearchString[j]) ||
+                    currentRoom.getFirstName().toLowerCase().contains(splitSearchString[j])
+                    || currentRoom.getLastName().toLowerCase().contains(splitSearchString[j]) )
+                {
+                    foundRooms.add(currentRoom); //if so then add the room to the list of found rooms
                 }
             }
         }
-
-        searchAdapter = new SearchAdapter(MainActivity.this, foundRooms);
-        searchRecyclerView.setAdapter(searchAdapter);
+        searchAdapter = new SearchAdapter(MainActivity.this, foundRooms); //create and initialise search adapter
+        searchRecyclerView.setAdapter(searchAdapter); //and add the adapter to the recycler view
     }
 
+    //this method reads the favourites file and returns a list of strings
     private ArrayList<String> readFromFile() {
-
-        ArrayList<String> favourites = new ArrayList<>();
-
+        ArrayList<String> favourites = new ArrayList<>(); //the data read from the file is stored in this list
         try {
             OutputStream outputStream = openFileOutput(RoomActivity.FILE_NAME,MODE_APPEND); //establish output stream first in order to make sure that a favourites file is created if it does not already exist
             InputStream inputStream = openFileInput(RoomActivity.FILE_NAME); //create input stream to the favourites file
 
-            if ( inputStream != null && outputStream != null) {
+            if ( inputStream != null && outputStream != null) { //if both streams have been successfully established
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";
-
+                //then read each line of text in the file and
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    favourites.add(receiveString);
+                    favourites.add(receiveString); //add it to the list
                 }
-                inputStream.close();
+                inputStream.close(); //close input and output streams
                 outputStream.close();
             }
         }
+        //returns appropriate error messages if exceptions are thrown
         catch (FileNotFoundException e) {
             Toast toast = Toast.makeText(MainActivity.this, "File not found", Toast.LENGTH_SHORT);
             toast.show();
@@ -251,7 +258,8 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
             toast.show();
             return favourites;
         }
-        return favourites;
+        return favourites; //return the list of strings read from the favourites file
+        //favourites are stored in a "room number%first name%last name" format where "%" is used to separate the parts
     }
 
     @Override
