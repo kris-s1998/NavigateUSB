@@ -12,10 +12,18 @@
         android:layout_height="0dp"
         android:layout_weight="0.88">
 
-        <com.example.kskie.draft3.TouchImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/image"/>
+
+                <com.example.kskie.draft3.TouchImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/image"/>
+                <ImageView
+                    android:id="@+id/masks"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:scaleType="fitCenter"
+                    android:visibility="invisible"
+                    />
 
     />
 
