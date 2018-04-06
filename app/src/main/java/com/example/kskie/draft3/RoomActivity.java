@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 public class RoomActivity extends AppCompatActivity {
 
-    public static final String FILE_NAME = "testFile.txt";
+    public static final String FILE_NAME = "testFileNew.txt";
     public static final String SEPARATOR = "%";
 
     ArrayList<Room> roomList;
@@ -107,8 +107,12 @@ public class RoomActivity extends AppCompatActivity {
     public void populateFields(){
         Bundle b = getIntent().getExtras();
         String roomNo = "";
+        String firstName ="";
+        String lastName = "";
         if(b != null) {
-            roomNo = b.getString("roomNo");
+            firstName = b.getString(MainActivity.FIRST_NAME);
+            lastName = b.getString(MainActivity.LAST_NAME);
+            roomNo = b.getString(MainActivity.ROOM_NO);
         }  //else go back to main activity?
 
         foundRooms.clear();
@@ -116,13 +120,12 @@ public class RoomActivity extends AppCompatActivity {
 
             if (roomList.get(count).getNumber().equals(roomNo)){
                 foundRooms.add(roomList.get(count));
-                //roomHeader.setText("hi");
             }
         }
         if (foundRooms.size() > 0){
             for (int i =0; i<foundRooms.size(); i++){
                 Room currentRoom = foundRooms.get(i);
-                if(i == 0){
+                if(currentRoom.getNumber().equals(roomNo) && currentRoom.getFirstName().equals(firstName) && currentRoom.getLastName().equals(lastName)){
                     roomHeader.setText("Room "+currentRoom.getNumber()+" (Level "+ currentRoom.getLevel()+ ")");
                     thisRoom= new Room(currentRoom);
                     if(!currentRoom.getViaRoom().equals(""))
@@ -219,7 +222,7 @@ public class RoomActivity extends AppCompatActivity {
         boolean favourite = false; //initialise favourites variable
         for(int i = 0; i<favourites.size(); i++){ //for each item in the favourites list
             String[] splitStrings = favourites.get(i).trim().split(SEPARATOR); //split up the text string and
-            if (splitStrings[0].equals(thisRoom.getNumber())){ //check if this room is in the list of favourites
+            if (splitStrings[0].equals(thisRoom.getNumber()) && splitStrings[1].equals(thisRoom.getFirstName()) && splitStrings[2].equals(thisRoom.getLastName())){ //check if this room is in the list of favourites
                 favourite = true; //if yes then set to true
             }
         }
