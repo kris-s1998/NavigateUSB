@@ -47,48 +47,40 @@ public class Graph {
                 }
             }
             nodes.get(nextNode).setVisited(true); // once all the neighbour nodes have been visited, set the node to visited
-            nextNode = getNodeShortestDistanced(); // next node must be with shortest distance
+            nextNode = getNextNearestNode(); // next node must be with shortest distance
 
         }
-        ArrayList<String> route = new ArrayList<>();
-        ArrayList<Edge> properRoute = new ArrayList<>();
-        int i = destinationIndex;
+        ArrayList<Edge> routeEdges = new ArrayList<>(); //this list will hold the edges which make up the shortest route
+        ArrayList<String> directions = new ArrayList<>(); //this will hold the written directions for the shortest route
+        int i = destinationIndex; //the index of the destination node
+        //the following loop works backwards from the destination node, taking the last shortest edge, adding it to the route list,
+        //then taking the neighbour node and repeating the process until the source node is reached
         do{
-            Node currentNode = nodes.get(i);
-            properRoute.add(currentNode.lastShortestEdge);
-            if(currentNode.lastShortestEdge.getFromNodeIndex() == i){
-                route.add(currentNode.lastShortestEdge.getDirectionToNode());
-                i = currentNode.lastShortestEdge.getToNodeIndex();
+            Node currentNode = nodes.get(i); //the current node
+            routeEdges.add(currentNode.lastShortestEdge); //add the last shortest edge to the route list
+            //the next if statement checks which side of the edge the current node is on
+            if(currentNode.lastShortestEdge.getFromNodeIndex() == i){ //if current node index is on the "from" side
+                directions.add(currentNode.lastShortestEdge.getDirectionToNode()); //add direction from node to the directions list
+                i = currentNode.lastShortestEdge.getToNodeIndex(); //set current node to the other node on  this edge
 
-            }else{
-                route.add(currentNode.lastShortestEdge.getDirectionFromNode());
-                i = currentNode.lastShortestEdge.getFromNodeIndex();
+            }else{//else, current node is on the "to" side
+                directions.add(currentNode.lastShortestEdge.getDirectionFromNode()); //add direction to node to the directions list
+                i = currentNode.lastShortestEdge.getFromNodeIndex(); //set current node to the other node on this edge
             }
-
-
-
-        }while(i!=sourceIndex);
-        return route;
+        }while(i!=sourceIndex); //repeat the loop until the source node is reached and the route is complete
+        return directions; //when the route is complete, return the list of directions
     }
-    // now we're going to implement this method in next part !
-    private int getNodeShortestDistanced() {
-        int storedNodeIndex = 0;
-        double storedDist = Integer.MAX_VALUE;
-        for (int i = 0; i < nodes.size(); i++) {
-            double currentDist = nodes.get(i).getDistanceFromSource();
-            if (!nodes.get(i).isVisited() && currentDist < storedDist) {
-                storedDist = currentDist;
-                storedNodeIndex = i;
+    //this method finds index of the next node nearest to the source which has not been visited yet
+    private int getNextNearestNode() {
+        int storedNodeIndex = 0; //initialise node index
+        double storedDist = Integer.MAX_VALUE; //initialise stored distance, must be high because the method is looking for the lowest distance
+        for (int i = 0; i < nodes.size(); i++) { //for every node in the nodes list
+            double currentDist = nodes.get(i).getDistanceFromSource(); //get the distance from the source
+            if (!nodes.get(i).isVisited() && currentDist < storedDist) { //if node has not been visited and distance is lowest so far
+                storedDist = currentDist; //update the stored distance
+                storedNodeIndex = i; //update the index of the next nearest node
             }
         }
-        return storedNodeIndex;
+        return storedNodeIndex; //return index of the next nearest node that has not been visited yet
     }
-
-    public ArrayList <Node> getNodes() {
-        return nodes;
-    }
-    public ArrayList <Edge> getEdges() {
-        return edges;
-    }
-
 }
