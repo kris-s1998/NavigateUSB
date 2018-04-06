@@ -5,4 +5,7 @@
     <color name="colorAccent">#597489</color>
     <color name="mediumBlue">#083C63</color>
     <color name="lightBrown">#A69984</color>
+    <color name="darkColorPrimary">#1e2756</color>
+    <color name="darkColorPrimaryDark">#141831</color>
+    <color name="darkColorAccent">#2aac4b</color>
 </resources>

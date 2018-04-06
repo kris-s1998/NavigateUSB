@@ -1,6 +1,7 @@
 package com.example.kskie.draft3;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -33,8 +34,18 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
     int maxFloor = 5;
     int minFloor = 1;
 
+    private static final String PREFS = "prefs";
+    private static final String PREF_DARK_THEME = "dark_theme";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // EDIT
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
+            setTheme(R.style.AppTheme_Dark_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
@@ -76,6 +87,7 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
                     Glide.with(MapActivity.this)
                             .using(new FirebaseImageLoader())
                             .load(floors.get(floorNo))
+                            .placeholder(loading.getIndeterminateDrawable())
                             .into(imageView);
                 }
         });
@@ -90,6 +102,7 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
                 Glide.with(MapActivity.this)
                         .using(new FirebaseImageLoader())
                         .load(floors.get(floorNo))
+                        .placeholder(loading.getIndeterminateDrawable())
                         .into(imageView);
             }
         });

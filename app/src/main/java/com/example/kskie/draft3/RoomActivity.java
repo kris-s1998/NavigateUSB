@@ -3,6 +3,7 @@ package com.example.kskie.draft3;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -42,9 +43,17 @@ public class RoomActivity extends AppCompatActivity {
     TextView tutorList;
     ImageButton btnFavourite;
 
+    private static final String PREFS = "prefs";
+    private static final String PREF_DARK_THEME = "dark_theme";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
+            setTheme(R.style.AppTheme_Dark_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
 

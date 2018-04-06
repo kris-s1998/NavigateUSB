@@ -2,6 +2,7 @@ package com.example.kskie.draft3;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -44,6 +45,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener{
 
+    //shared Preferences
+    private static final String PREFS = "prefs";
+    private static final String PREF_DARK_THEME = "dark_theme";
+
     public static int ACTIVITY_NUM = 1; //this number represents the main activity and is used by the menu fragment to determine which activity is currently active
     //the following constants are used when information about a room is being passed from once activity to another: they are the keys of the strings being passed between activities
     public static String ROOM_NO = "roomNo"; //the key for the room number string
@@ -66,6 +71,13 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // EDIT
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
+            setTheme(R.style.AppTheme_Dark_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

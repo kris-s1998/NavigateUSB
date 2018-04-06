@@ -1,5 +1,6 @@
 package com.example.kskie.draft3;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -38,11 +39,17 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
     ImageView imgDest;
     ImageView imgStart;
 
-
-
+    private static final String PREFS = "prefs";
+    private static final String PREF_DARK_THEME = "dark_theme";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
+            setTheme(R.style.AppTheme_Dark_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigate);
 
