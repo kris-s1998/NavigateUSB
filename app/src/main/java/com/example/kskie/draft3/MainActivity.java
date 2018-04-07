@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,6 +27,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.twitter.sdk.android.core.DefaultLogger;
+import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterConfig;
+import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
+import com.twitter.sdk.android.tweetui.UserTimeline;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -110,6 +117,20 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
         searchRecyclerView.setHasFixedSize(true);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         searchRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+
+        ListView tweetlist = findViewById(R.id.tweetslist);
+
+        TwitterConfig config = new TwitterConfig.Builder(this)
+                .logger(new DefaultLogger(Log.DEBUG))
+                .twitterAuthConfig(new TwitterAuthConfig("VUcGycwBUZfAeipECg54hU01Z", "mzoAhvTbwDiL0b7ss2QUGfvFOR1WgsNUJdPXeC6MWJ0PLb4Q2S"))
+                .debug(true)
+                .build();
+        Twitter.initialize(config);
+        final UserTimeline userTimeline = new UserTimeline.Builder()
+                .screenName("computingncl")
+                .build();
+        final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter(this, userTimeline);
+        tweetlist.setAdapter(adapter);
 
         roomList = new ArrayList<>(); //instantiate list of all rooms
         foundRooms = new ArrayList<>(); //in list of rooms which match the search criteria
