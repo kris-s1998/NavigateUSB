@@ -32,7 +32,9 @@ import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterConfig;
+import com.twitter.sdk.android.tweetui.SearchTimeline;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
+import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 import com.twitter.sdk.android.tweetui.UserTimeline;
 
 import java.io.BufferedReader;
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         searchRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
-        ListView tweetlist = findViewById(R.id.tweetslist);
+        //ListView tweetlist = findViewById(R.id.tweetslist);
 
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))
@@ -138,12 +140,32 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
                 .debug(true)
                 .build();
         Twitter.initialize(config);
-        final UserTimeline userTimeline = new UserTimeline.Builder()
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.tweetslist);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        final UserTimeline searchTimeline = new UserTimeline.Builder()
+                .screenName("computingncl")
+                .maxItemsPerRequest(5)
+                .build();
+
+
+        final TweetTimelineRecyclerViewAdapter adapter =
+                new TweetTimelineRecyclerViewAdapter.Builder(this)
+                        .setTimeline(searchTimeline)
+                        .setViewStyle(R.style.tw__TweetLightStyle)
+                        .build();
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setAdapter(adapter);
+
+       /* final UserTimeline userTimeline = new UserTimeline.Builder()
                 .screenName("computingncl")
                 .build();
         final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter(this, userTimeline);
         tweetlist.setAdapter(adapter);
-
+*/
         roomList = new ArrayList<>(); //instantiate list of all rooms
         foundRooms = new ArrayList<>(); //in list of rooms which match the search criteria
 
