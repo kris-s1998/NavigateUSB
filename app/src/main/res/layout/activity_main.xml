@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true">
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.88"
@@ -16,12 +16,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal"
+                android:weightSum="4"
+                android:paddingHorizontal="70dp">
 
-    <EditText
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:paddingVertical="10dp"
+                    android:src="@drawable/logo1" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/logo2"
+                    android:padding="10dp"/>
+            </LinearLayout>
+
+
+            <EditText
         android:id="@+id/search_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search Text..."
+        android:hint="Search for a room or tutor..."
         android:layout_margin="10dp"
         />
 
@@ -33,26 +55,6 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        android:paddingHorizontal="70dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:src="@drawable/logo1" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/logo2"
-            android:padding="20dp"/>
-    </LinearLayout>
 
     <TextView
         android:id="@+id/txt_favourites"
@@ -63,22 +65,23 @@
     <ListView
         android:id="@+id/listFavourites"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/txt_twitter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Updates"
+                android:paddingHorizontal="10dp"/>
 
-        <TextView
-            android:id="@+id/txtTest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-    </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/tweetslist"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:dividerHeight="5dp"
+                android:drawSelectorOnTop="false" />
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
     <LinearLayout
         android:id="@+id/bottomMenuBar"
         android:layout_width="match_parent"

@@ -1,25 +1,15 @@
 package com.example.kskie.draft3;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,22 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class NavigateActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener{
-    public static int activityNum = 3;
+    public static int ACTIVITY_NUM = 3;
 
     ArrayList <Node> nodes = new ArrayList<>();
     ArrayList <Edge> edges = new ArrayList<>();
@@ -61,11 +39,17 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
     ImageView imgDest;
     ImageView imgStart;
 
-
-
+    private static final String PREFS = "prefs";
+    private static final String PREF_DARK_THEME = "dark_theme";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
+            setTheme(R.style.AppTheme_Dark_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigate);
 
@@ -74,7 +58,7 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        MenuFragment menuFragment = MenuFragment.newInstance(activityNum);
+        MenuFragment menuFragment = MenuFragment.newInstance(ACTIVITY_NUM);
         fragmentTransaction.add(R.id.bottomMenuBar, menuFragment);
         fragmentTransaction.commit();
 
@@ -183,8 +167,11 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
            boolean foundDestination = false;
            String start = actvStart.getText().toString();
            String destination = actvDest.getText().toString();
-           if(start.isEmpty() || destination.isEmpty()){
+           if(start.isEmpty() || destination.isEmpty()) {
                Toast toast = Toast.makeText(NavigateActivity.this, "Starting point and destination cannot be empty.", Toast.LENGTH_SHORT);
+               toast.show();
+           }else if(start.equals(destination)){
+               Toast toast = Toast.makeText(NavigateActivity.this, "Starting point and destination cannot be the same.", Toast.LENGTH_SHORT);
                toast.show();
            }else {
                for (Node s:nodes){

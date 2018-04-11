@@ -39,8 +39,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                     Context context = view.getContext();
                     Intent intent = new Intent(context, RoomActivity.class);
                     Bundle b = new Bundle();
-                    String roomNo = foundRooms.get(getLayoutPosition()).getNumber();
-                    b.putString("roomNo",roomNo);
+                    Room selectedRoom = foundRooms.get(getLayoutPosition());
+                    b.putString(MainActivity.ROOM_NO,selectedRoom.getNumber());
+                    b.putString(MainActivity.FIRST_NAME,selectedRoom.getFirstName());
+                    b.putString(MainActivity.LAST_NAME,selectedRoom.getLastName());
                     intent.putExtras(b);
                     context.startActivity(intent);
                 }

@@ -3,13 +3,16 @@ package com.example.kskie.draft3;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 
 public class RoomActivity extends AppCompatActivity {
 
-    public static final String FILE_NAME = "testFile.txt";
+    public static final String FILE_NAME = "testFileNew.txt";
     public static final String SEPARATOR = "%";
 
     ArrayList<Room> roomList;
@@ -41,10 +44,19 @@ public class RoomActivity extends AppCompatActivity {
     TextView roomDesc;
     TextView tutorList;
     ImageButton btnFavourite;
+    ImageView roomImageView;
 
+    private static final String PREFS = "prefs";
+    private static final String PREF_DARK_THEME = "dark_theme";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
+            setTheme(R.style.AppTheme_Dark_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
 
@@ -55,6 +67,7 @@ public class RoomActivity extends AppCompatActivity {
         roomDesc = findViewById(R.id.room_desc);
         tutorList = findViewById(R.id.tutor_list);
         btnFavourite = findViewById(R.id.btn_favourite);
+        roomImageView = findViewById(R.id.roomImageView);
 
 
         databaseReference = FirebaseDatabase.getInstance().getReference("rooms");
@@ -107,8 +120,12 @@ public class RoomActivity extends AppCompatActivity {
     public void populateFields(){
         Bundle b = getIntent().getExtras();
         String roomNo = "";
+        String firstName ="";
+        String lastName = "";
         if(b != null) {
-            roomNo = b.getString("roomNo");
+            firstName = b.getString(MainActivity.FIRST_NAME);
+            lastName = b.getString(MainActivity.LAST_NAME);
+            roomNo = b.getString(MainActivity.ROOM_NO);
         }  //else go back to main activity?
 
         foundRooms.clear();
@@ -116,14 +133,19 @@ public class RoomActivity extends AppCompatActivity {
 
             if (roomList.get(count).getNumber().equals(roomNo)){
                 foundRooms.add(roomList.get(count));
-                //roomHeader.setText("hi");
             }
         }
         if (foundRooms.size() > 0){
             for (int i =0; i<foundRooms.size(); i++){
                 Room currentRoom = foundRooms.get(i);
-                if(i == 0){
+                if(currentRoom.getNumber().equals(roomNo) && currentRoom.getFirstName().equals(firstName) && currentRoom.getLastName().equals(lastName)){
                     roomHeader.setText("Room "+currentRoom.getNumber()+" (Level "+ currentRoom.getLevel()+ ")");
+                    Glide.with(this)
+                            .load(currentRoom.getImage()) // image url
+                            //.placeholder(R.drawable.logo1) // any placeholder to load at start
+                            .error(R.drawable.logo2)  // any image in case of error
+                            // resizing
+        .centerCrop().into(roomImageView);
                     thisRoom= new Room(currentRoom);
                     if(!currentRoom.getViaRoom().equals(""))
                         roomDesc.setText("Access via room "+ currentRoom.getViaRoom());
@@ -219,7 +241,7 @@ public class RoomActivity extends AppCompatActivity {
         boolean favourite = false; //initialise favourites variable
         for(int i = 0; i<favourites.size(); i++){ //for each item in the favourites list
             String[] splitStrings = favourites.get(i).trim().split(SEPARATOR); //split up the text string and
-            if (splitStrings[0].equals(thisRoom.getNumber())){ //check if this room is in the list of favourites
+            if (splitStrings[0].equals(thisRoom.getNumber()) && splitStrings[1].equals(thisRoom.getFirstName()) && splitStrings[2].equals(thisRoom.getLastName())){ //check if this room is in the list of favourites
                 favourite = true; //if yes then set to true
             }
         }

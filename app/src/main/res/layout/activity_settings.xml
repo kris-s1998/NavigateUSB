@@ -13,7 +13,15 @@
         android:orientation="vertical"
         android:layout_weight="0.88">
 
+        <Switch
+            android:id="@+id/darkModeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Toggle Dark Mode" />
+
     </LinearLayout>
+
+
 
     <LinearLayout
         android:id="@+id/bottomMenuBar"
