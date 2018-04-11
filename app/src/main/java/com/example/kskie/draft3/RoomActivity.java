@@ -7,9 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,6 +43,7 @@ public class RoomActivity extends AppCompatActivity {
     TextView roomDesc;
     TextView tutorList;
     ImageButton btnFavourite;
+    ImageView roomImageView;
 
 
     @Override
@@ -55,6 +58,7 @@ public class RoomActivity extends AppCompatActivity {
         roomDesc = findViewById(R.id.room_desc);
         tutorList = findViewById(R.id.tutor_list);
         btnFavourite = findViewById(R.id.btn_favourite);
+        roomImageView = findViewById(R.id.roomImageView);
 
 
         databaseReference = FirebaseDatabase.getInstance().getReference("rooms");
@@ -127,6 +131,12 @@ public class RoomActivity extends AppCompatActivity {
                 Room currentRoom = foundRooms.get(i);
                 if(currentRoom.getNumber().equals(roomNo) && currentRoom.getFirstName().equals(firstName) && currentRoom.getLastName().equals(lastName)){
                     roomHeader.setText("Room "+currentRoom.getNumber()+" (Level "+ currentRoom.getLevel()+ ")");
+                    Glide.with(this)
+                            .load(currentRoom.getImage()) // image url
+                            //.placeholder(R.drawable.logo1) // any placeholder to load at start
+                            .error(R.drawable.logo2)  // any image in case of error
+                            // resizing
+        .centerCrop().into(roomImageView);
                     thisRoom= new Room(currentRoom);
                     if(!currentRoom.getViaRoom().equals(""))
                         roomDesc.setText("Access via room "+ currentRoom.getViaRoom());

@@ -11,18 +11,20 @@ public class Room {
     private String level;
     private String number;
     private String viaRoom;
+    private String image; //image url in firebase database
 
     public Room(){
 
     }
 
-    public Room(String firstName, String group, String lastName, String level, String number, String viaRoom) {
+    public Room(String firstName, String group, String lastName, String level, String number, String viaRoom, String image) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.group = group;
         this.level = level;
         this.number = number;
         this.viaRoom = viaRoom;
+        this.image = image;
     }
 
     public Room(Room toBeCloned){
@@ -32,6 +34,7 @@ public class Room {
         group = toBeCloned.getGroup();
         level = toBeCloned.getLevel();
         viaRoom = toBeCloned.getViaRoom();
+        image = toBeCloned.getImage();
 
     }
 
@@ -39,6 +42,7 @@ public class Room {
         return firstName;
     }
 
+    public String getImage() { return image;}
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
