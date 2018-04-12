@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -32,12 +33,12 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
     TextView txtDirections;
     Button btnGetDirections;
 
-    NodesAdapter searchAdapter;
-
     AutoCompleteTextView actvStart;
     AutoCompleteTextView actvDest;
     ImageView imgDest;
     ImageView imgStart;
+    ImageView imgCurrentLocation;
+    ImageView imgDestinationLocation;
 
     private static final String PREFS = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -46,7 +47,7 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
     protected void onCreate(Bundle savedInstanceState) {
 
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
+        if(prefs.getBoolean(PREF_DARK_THEME, false)){
             setTheme(R.style.AppTheme_Dark_NoActionBar);
         }
 
@@ -67,6 +68,15 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
         actvDest = findViewById(R.id.actvDest);
         imgDest = findViewById(R.id.destArrow);
         btnGetDirections = findViewById(R.id.btn_getDirections);
+        imgCurrentLocation = findViewById(R.id.startIcon);
+        imgDestinationLocation = findViewById(R.id.destinationIcon);
+
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
+            imgDest.setImageResource(R.drawable.drop_down_arrow_dark_mode);
+            imgStart.setImageResource(R.drawable.drop_down_arrow_dark_mode);
+            imgDestinationLocation.setImageResource(R.drawable.destination_location_dark_mode);
+            imgCurrentLocation.setImageResource(R.drawable.current_location_dark_mode);
+        }
 
         nodesReference = FirebaseDatabase.getInstance().getReference("nodes");
         edgesReference = FirebaseDatabase.getInstance().getReference("edges");
@@ -205,6 +215,13 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
                    toast.show();
                }
 
+           }
+           try {
+               //hide the keyboard so that the user can read the directions easily
+               InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+               imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+           } catch (Exception e) {
+               //exception thrown if keyboard is already hidden, no need to do anything as already hidden
            }
        }
 

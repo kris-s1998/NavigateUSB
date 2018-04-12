@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:text="room"
             android:textSize="18sp"
-            android:textColor="#212121"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
         <TextView
             android:id="@+id/tutorName"
@@ -29,7 +29,7 @@
             android:textSize="13sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#212121"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     </LinearLayout>
 

@@ -149,12 +149,20 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
                 .maxItemsPerRequest(5)
                 .build();
 
+        final TweetTimelineRecyclerViewAdapter adapter;
 
-        final TweetTimelineRecyclerViewAdapter adapter =
-                new TweetTimelineRecyclerViewAdapter.Builder(this)
-                        .setTimeline(searchTimeline)
-                        .setViewStyle(R.style.tw__TweetLightStyle)
-                        .build();
+        if(prefs.getBoolean(PREF_DARK_THEME, true)) {
+            adapter = new TweetTimelineRecyclerViewAdapter.Builder(this)
+                    .setTimeline(searchTimeline)
+                    .setViewStyle(R.style.tw__TweetDarkStyle)
+                    .build();
+        } else {
+            adapter = new TweetTimelineRecyclerViewAdapter.Builder(this)
+                    .setTimeline(searchTimeline)
+                    .setViewStyle(R.style.tw__TweetLightStyle)
+                    .build();
+        }
+
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
