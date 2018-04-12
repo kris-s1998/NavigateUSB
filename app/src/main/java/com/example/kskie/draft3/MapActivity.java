@@ -2,6 +2,8 @@ package com.example.kskie.draft3;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,17 +12,27 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import static com.example.kskie.draft3.MainActivity.*;
 
 public class MapActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener {
     public static int activityNum = 2;
@@ -29,13 +41,16 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
     TouchImageView imageView;
     ProgressBar loading;
     Button up, down;
+    ImageView mask;
     //not portable really (needs file input)
     int floorNo = 0;
-    int maxFloor = 5;
+    int maxFloor;
     int minFloor = 1;
+    List<Floor> floors = new ArrayList<>();
 
     private static final String PREFS = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +67,7 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
         imageView = findViewById(R.id.image);
         storageRef = FirebaseStorage.getInstance().getReference();
         loading = findViewById(R.id.loadingBar);
+        mask = findViewById(R.id.masks);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -59,36 +75,43 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
         fragmentTransaction.add(R.id.bottomMenuBar, menuFragment);
         fragmentTransaction.commit();
 
-        //need to make portable
-        StorageReference floor1 = storageRef.child("floorMaps/floor1.png");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("floors");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                floors.clear();
 
-        Glide.with(MapActivity.this)
-                .using(new FirebaseImageLoader())
-                .load(floor1)
-                .placeholder(loading.getIndeterminateDrawable())
-                .into(imageView);
+                for(DataSnapshot d : dataSnapshot.getChildren()){
+                    Floor f = d.getValue(Floor.class);
+                    floors.add(f);
+                }
 
-        StorageReference floor2 = storageRef.child("floorMaps/floor2.png");
-        StorageReference floor3 = storageRef.child("floorMaps/floor3.png");
-        StorageReference floor4 = storageRef.child("floorMaps/floor4.png");
-        StorageReference floor5 = storageRef.child("floorMaps/floor5.png");
-        StorageReference floor6 = storageRef.child("floorMaps/floor6.png");
-        final List<StorageReference> floors = new ArrayList<>();
-        floors.addAll(Arrays.asList(floor1, floor2, floor3, floor4, floor5, floor6));
+                Glide.with(MapActivity.this)
+                        .load(floors.get(0).getImageurl())
+                        .placeholder(loading.getIndeterminateDrawable())
+                        .into(imageView);
+                imageView.setZoom((float)0.99);
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast toast = Toast.makeText(MapActivity.this, "Unable to read database", Toast.LENGTH_SHORT);
+                toast.show(); //if database cannot be read, display error message
+            }
+        });
 
         up = findViewById(R.id.btn_up);
         up.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (floorNo < maxFloor)
+                if (floorNo < floors.size()-1)
                     floorNo++;
                     Glide.with(MapActivity.this)
-                            .using(new FirebaseImageLoader())
-                            .load(floors.get(floorNo))
-                            .placeholder(loading.getIndeterminateDrawable())
-                            .into(imageView);
+                        .load(floors.get(floorNo).getImageurl())
+                        .placeholder(loading.getIndeterminateDrawable())
+                        .into(imageView);
                 }
         });
 
@@ -97,15 +120,15 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
 
             @Override
             public void onClick(View v) {
-                if (floorNo >= minFloor)
+                if (floorNo > 0)
                     floorNo--;
                 Glide.with(MapActivity.this)
-                        .using(new FirebaseImageLoader())
-                        .load(floors.get(floorNo))
+                        .load(floors.get(floorNo).getImageurl())
                         .placeholder(loading.getIndeterminateDrawable())
                         .into(imageView);
             }
         });
+
 
     }
 
@@ -113,4 +136,39 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
     public void onFragmentInteraction(Uri uri) {
         //
     }
+
+    private void loadImage(int floorIndex){
+        try {
+
+            Glide.with(MapActivity.this)
+                    .load(floors.get(floorIndex).getImageurl())
+                    .placeholder(loading.getIndeterminateDrawable())
+                    .into(imageView);
+
+        }catch (IndexOutOfBoundsException iobe){
+            Toast toast = Toast.makeText(MapActivity.this, "No floor to display", Toast.LENGTH_SHORT);
+            toast.show(); //if database cannot be read, display error message
+        }
+    }
+
+    public int getColor(int id, int x, int y){
+                ImageView img = (ImageView) findViewById (id);
+               img.setDrawingCacheEnabled(true);
+                Bitmap bitmap = Bitmap.createBitmap(img.getDrawingCache());
+                img.setDrawingCacheEnabled(false);
+                int pixel = bitmap.getPixel(x,y);
+                return pixel;
+            }
+
+            public boolean similarity(int color1, int color2, int tolerance){
+                if ((int) Math.abs (Color.red (color1) - Color.red (color2)) > tolerance )
+                       return false;
+                if ((int) Math.abs (Color.green (color1) - Color.green (color2)) > tolerance )
+                        return false;
+                if ((int) Math.abs (Color.blue (color1) - Color.blue (color2)) > tolerance )
+                        return false;
+                return true;
+            }
+
 }
+

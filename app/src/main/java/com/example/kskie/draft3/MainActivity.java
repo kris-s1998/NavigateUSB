@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
     public static String LAST_NAME = "lastName";  //the key for the last name string
     public static String ROOMS_DB_REFERENCE = "rooms";
 
+
     private EditText searchEditText; //the edit text view used for searching for tutor's rooms
     private RecyclerView searchRecyclerView; //the recycler view used to display search results
     private ListView favouritesListView; //the list view used to display favourite rooms
