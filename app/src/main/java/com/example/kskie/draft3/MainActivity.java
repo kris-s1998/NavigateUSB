@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -32,7 +33,6 @@ import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterConfig;
-import com.twitter.sdk.android.tweetui.SearchTimeline;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 import com.twitter.sdk.android.tweetui.TweetTimelineRecyclerViewAdapter;
 import com.twitter.sdk.android.tweetui.UserTimeline;
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
     private EditText searchEditText; //the edit text view used for searching for tutor's rooms
     private RecyclerView searchRecyclerView; //the recycler view used to display search results
     private ListView favouritesListView; //the list view used to display favourite rooms
+    private Button btnViewTimeline; //button which takes user to timeline activity
 
     private DatabaseReference roomsDBReference; //firebase database reference used to retrieve data from the database (about the rooms in the building)
 
@@ -133,48 +134,39 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         searchRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
-        //ListView tweetlist = findViewById(R.id.tweetslist);
-
+        btnViewTimeline = findViewById(R.id.btnTimeline);
+        btnViewTimeline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, TimelineActivity.class);
+                startActivity(intent);
+            }
+        });
+        ListView tweetsList = findViewById(R.id.tweetslist);
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))
                 .twitterAuthConfig(new TwitterAuthConfig("VUcGycwBUZfAeipECg54hU01Z", "mzoAhvTbwDiL0b7ss2QUGfvFOR1WgsNUJdPXeC6MWJ0PLb4Q2S"))
                 .debug(true)
                 .build();
         Twitter.initialize(config);
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.tweetslist);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        final UserTimeline searchTimeline = new UserTimeline.Builder()
+        final UserTimeline userTimeline = new UserTimeline.Builder()
                 .screenName("computingncl")
-                .maxItemsPerRequest(5)
                 .build();
-
-        final TweetTimelineRecyclerViewAdapter adapter;
-
+        final TweetTimelineListAdapter adapter;
         if(prefs.getBoolean(PREF_DARK_THEME, true)) {
-            adapter = new TweetTimelineRecyclerViewAdapter.Builder(this)
-                    .setTimeline(searchTimeline)
+            adapter = new TweetTimelineListAdapter.Builder(this)
+                    .setTimeline(userTimeline)
                     .setViewStyle(R.style.tw__TweetDarkStyle)
                     .build();
-        } else {
-            adapter = new TweetTimelineRecyclerViewAdapter.Builder(this)
-                    .setTimeline(searchTimeline)
+        }else {
+            adapter = new TweetTimelineListAdapter.Builder(this)
+                    .setTimeline(userTimeline)
                     .setViewStyle(R.style.tw__TweetLightStyle)
                     .build();
         }
+        tweetsList.setAdapter(adapter);
 
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setAdapter(adapter);
-
-       /* final UserTimeline userTimeline = new UserTimeline.Builder()
-                .screenName("computingncl")
-                .build();
-        final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter(this, userTimeline);
-        tweetlist.setAdapter(adapter);
-*/
         roomList = new ArrayList<>(); //instantiate list of all rooms
         foundRooms = new ArrayList<>(); //in list of rooms which match the search criteria
 
