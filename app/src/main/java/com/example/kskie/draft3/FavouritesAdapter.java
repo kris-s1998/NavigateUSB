@@ -54,8 +54,8 @@ public class FavouritesAdapter extends BaseAdapter {
         if(convertView == null){ //if the current view cannot be recycled
             convertView = inflater.inflate(R.layout.search_list_items, null); //create new view
         }
-        roomNumber = convertView.findViewById(R.id.roomNumber); //initiate the room number text view
-        tutorName = convertView.findViewById(R.id.tutorName); //initiate the tutor name text view
+        roomNumber = convertView.findViewById(R.id.txt_room_number); //initiate the room number text view
+        tutorName = convertView.findViewById(R.id.txt_tutor_name); //initiate the tutor name text view
         Room currentRoom = favourites.get(position); //get the current room object and
         roomNumber.setText(currentRoom.getFirstName() + " " + currentRoom.getLastName()); //change the text in the view to represent the current room
         tutorName.setText("Room "+ currentRoom.getNumber() + " (Level " + currentRoom.getLevel() + ")");

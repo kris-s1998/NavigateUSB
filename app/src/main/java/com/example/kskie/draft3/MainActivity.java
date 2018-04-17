@@ -60,10 +60,10 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
 
     public static int ACTIVITY_NUM = 1; //this number represents the main activity and is used by the menu fragment to determine which activity is currently active
     //the following constants are used when information about a room is being passed from once activity to another: they are the keys of the strings being passed between activities
-    public static String ROOM_NO = "roomNo"; //the key for the room number string
-    public static String FIRST_NAME = "firstName"; //the key for the first name string
-    public static String LAST_NAME = "lastName";  //the key for the last name string
-    public static String ROOMS_DB_REFERENCE = "rooms";
+    public static final String ROOM_NO = "roomNo"; //the key for the room number string
+    public static final String FIRST_NAME = "firstName"; //the key for the first name string
+    public static final String LAST_NAME = "lastName";  //the key for the last name string
+    public static String ROOMS_DB_REFERENCE = "rooms"; //the name of the rooms branch in the database
 
 
     private EditText searchEditText; //the edit text view used for searching for tutor's rooms
@@ -126,46 +126,53 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
             }
         });
 
-        //the following code initialises the interface elements on the home screen
-        searchEditText = findViewById(R.id.search_edit_text);
+        searchEditText = findViewById(R.id.search_edit_text); //initialise the search box
+        favouritesListView = findViewById(R.id.listFavourites); //initialise the list view of favourites
+
+        //initialise the recycler view which displays the search results
         searchRecyclerView = findViewById(R.id.recyclerView);
-        favouritesListView = findViewById(R.id.listFavourites);
         searchRecyclerView.setHasFixedSize(true);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         searchRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
-        btnViewTimeline = findViewById(R.id.btnTimeline);
-        btnViewTimeline.setOnClickListener(new View.OnClickListener() {
+        btnViewTimeline = findViewById(R.id.btnTimeline); //initialise the twitter timeline button
+        btnViewTimeline.setOnClickListener(new View.OnClickListener() { //add a listener for the timeline button
             @Override
             public void onClick(View view) {
+                //when the button is clicked, go to the timeline activity
                 Intent intent = new Intent(MainActivity.this, TimelineActivity.class);
                 startActivity(intent);
             }
         });
-        ListView tweetsList = findViewById(R.id.tweetslist);
+
+        ListView tweetsList = findViewById(R.id.tweetslist); //intialise the list view which shows the latest tweet
+
+        //configure the twitter api
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))
-                .twitterAuthConfig(new TwitterAuthConfig("VUcGycwBUZfAeipECg54hU01Z", "mzoAhvTbwDiL0b7ss2QUGfvFOR1WgsNUJdPXeC6MWJ0PLb4Q2S"))
+                .twitterAuthConfig(new TwitterAuthConfig(getString(R.string.consumer_key), getString(R.string.consumer_secret)))
                 .debug(true)
                 .build();
-        Twitter.initialize(config);
+        Twitter.initialize(config); //initialise twitter to get tweets
 
+        //build a twitter user timeline
         final UserTimeline userTimeline = new UserTimeline.Builder()
-                .screenName("computingncl")
+                .screenName(getString(R.string.twitter_screen_name))
+                .maxItemsPerRequest(1)
                 .build();
-        final TweetTimelineListAdapter adapter;
-        if(prefs.getBoolean(PREF_DARK_THEME, true)) {
+        final TweetTimelineListAdapter adapter; //adapter for the tweet list
+        if(prefs.getBoolean(PREF_DARK_THEME, true)) { //if app is in dark mode
             adapter = new TweetTimelineListAdapter.Builder(this)
                     .setTimeline(userTimeline)
-                    .setViewStyle(R.style.tw__TweetDarkStyle)
+                    .setViewStyle(R.style.tw__TweetDarkStyle) //then set the twitter timeline to dark mode
                     .build();
         }else {
             adapter = new TweetTimelineListAdapter.Builder(this)
                     .setTimeline(userTimeline)
-                    .setViewStyle(R.style.tw__TweetLightStyle)
+                    .setViewStyle(R.style.tw__TweetLightStyle) //else set the twitter timeline to light mode
                     .build();
         }
-        tweetsList.setAdapter(adapter);
+        tweetsList.setAdapter(adapter); //set the adapter of the tweet list
 
         roomList = new ArrayList<>(); //instantiate list of all rooms
         foundRooms = new ArrayList<>(); //in list of rooms which match the search criteria
@@ -174,12 +181,12 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence c, int i, int i1, int i2) {
-
+                //no action needed
             }
 
             @Override
             public void onTextChanged(CharSequence c, int i, int i1, int i2) {
-
+                //no action needed
             }
 
             @Override

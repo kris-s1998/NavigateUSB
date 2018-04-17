@@ -13,24 +13,21 @@ import android.widget.Button;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MenuFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MenuFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class is the menu fragment which is used on every activity. It is used to navigate around the application.
+ *  Provides buttons to the main activities of the app.
+ *
+ * Created by Kris Skierniewski on 05/03/2018.
  */
 public class MenuFragment extends Fragment implements View.OnClickListener{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private final static String ARG_1 = "activityNumber";
+    private final static String ARG_1 = "activityNumber"; //this parameter is used to let the fragment know which activity created it
+    //its used to disable the button in the nav bar which navigates to the current activity, and changes the colour of the button relating to the current activity
 
-    Button btnHome;
-    Button btnMap;
-    Button btnNavigate;
-    Button btnSettings;
+    Button btnHome; //leads to MainActivity
+    Button btnMap; //leads to MapActivity
+    Button btnNavigate; //leads to NavigateActivity
+    Button btnSettings; //leads to SettingsActivity
 
-    private int activityNum;
+    private int activityNum; //store the unique number of the activity
 
     private OnFragmentInteractionListener mListener;
 
@@ -38,17 +35,12 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment MenuFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+    //called when a new instance of menuFragment is created, passing one parameter (the activity number)
     public static MenuFragment newInstance(int param1) {
+        //create a new fragment
         MenuFragment fragment = new MenuFragment();
         Bundle args = new Bundle();
+        //and pass the parameter to it
         args.putInt(ARG_1, param1);
         fragment.setArguments(args);
         return fragment;
@@ -57,47 +49,40 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null) { //retrieve the argument (activity number)
             activityNum = getArguments().getInt(ARG_1);
         }
-
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_menu, container, false);
-        btnHome = v.findViewById(R.id.btn_home);
-        btnHome.setOnClickListener(this);
-        btnMap = v.findViewById(R.id.btn_map);
-        btnMap.setOnClickListener(this);
-        btnNavigate = v.findViewById(R.id.btn_navigate);
-        btnNavigate.setOnClickListener(this);
-        btnSettings = v.findViewById(R.id.btn_settings);
-        btnSettings.setOnClickListener(this);
-        if(activityNum == NavigateActivity.ACTIVITY_NUM){
+        btnHome = v.findViewById(R.id.btn_home); //initialise home button
+        btnHome.setOnClickListener(this); //and add a click listener
+        btnMap = v.findViewById(R.id.btn_map); //initialise map button
+        btnMap.setOnClickListener(this); //add click listener
+        btnNavigate = v.findViewById(R.id.btn_navigate); //initialise navigate button
+        btnNavigate.setOnClickListener(this); //add click listener
+        btnSettings = v.findViewById(R.id.btn_settings); //initialise settings button
+        btnSettings.setOnClickListener(this); //add click listener
+        if(activityNum == NavigateActivity.ACTIVITY_NUM){ //if current activity is the navigate activity
             Drawable icon = getResources().getDrawable(R.drawable.navigate_active);
-            btnNavigate.setTextColor(getResources().getColor(R.color.colorPrimary));
-            btnNavigate.setCompoundDrawablesWithIntrinsicBounds(null,icon,null,null);
-        }else if (activityNum == MainActivity.ACTIVITY_NUM) {
+            btnNavigate.setTextColor(getResources().getColor(R.color.colorPrimary)); //then change the colour of the button text
+            btnNavigate.setCompoundDrawablesWithIntrinsicBounds(null,icon,null,null); //change the colour of the button icon
+        }else if (activityNum == MainActivity.ACTIVITY_NUM) { //if current activity is the main activity
             Drawable icon = getResources().getDrawable(R.drawable.home_active);
-            btnHome.setTextColor(getResources().getColor(R.color.colorPrimary));
-            btnHome.setCompoundDrawablesWithIntrinsicBounds(null,icon,null,null);
-        }else if (activityNum == MapActivity.activityNum) {
+            btnHome.setTextColor(getResources().getColor(R.color.colorPrimary)); //then change the button text colour
+            btnHome.setCompoundDrawablesWithIntrinsicBounds(null,icon,null,null); //change the button icon colour
+        }else if (activityNum == MapActivity.activityNum) {  //if current activity is the map activity
             Drawable icon = getResources().getDrawable(R.drawable.map_active);
-            btnMap.setTextColor(getResources().getColor(R.color.colorPrimary));
-            btnMap.setCompoundDrawablesWithIntrinsicBounds(null,icon,null,null);
-        }else if (activityNum == SettingsActivity.activityNum) {
+            btnMap.setTextColor(getResources().getColor(R.color.colorPrimary)); //then change the button text colour
+            btnMap.setCompoundDrawablesWithIntrinsicBounds(null,icon,null,null); //change the button icon colour
+        }else if (activityNum == SettingsActivity.ACTIVITY_NUM) { //it the activity is the settings activity
             Drawable icon = getResources().getDrawable(R.drawable.settings_active);
-            btnSettings.setTextColor(getResources().getColor(R.color.colorPrimary));
-            btnSettings.setCompoundDrawablesWithIntrinsicBounds(null,icon,null,null);
+            btnSettings.setTextColor(getResources().getColor(R.color.colorPrimary)); //then change the button text colour
+            btnSettings.setCompoundDrawablesWithIntrinsicBounds(null,icon,null,null); //and change the button icon colour
         }
-
-
         return v;
     }
 
@@ -120,6 +105,9 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        //when any of the buttons in the fragment are clicked, check if the user is not already on the selected activity
+        //by comparing the activity number.
+        //if not the current activity, then start the appropriate activity
         if(view.getId() == btnHome.getId() && activityNum != MainActivity.ACTIVITY_NUM){
             Intent intent = new Intent(this.getContext(), MainActivity.class);
             startActivity(intent);
@@ -129,25 +117,13 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         }else if(view.getId() == btnNavigate.getId() && activityNum != NavigateActivity.ACTIVITY_NUM){
             Intent intent = new Intent(this.getContext(), NavigateActivity.class);
             startActivity(intent);
-        }else if(view.getId() == btnSettings.getId() && activityNum != SettingsActivity.activityNum){
+        }else if(view.getId() == btnSettings.getId() && activityNum != SettingsActivity.ACTIVITY_NUM){
             Intent intent = new Intent(this.getContext(), SettingsActivity.class);
             startActivity(intent);
         }
-
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

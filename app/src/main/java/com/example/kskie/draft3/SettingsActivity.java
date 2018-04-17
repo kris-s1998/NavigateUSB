@@ -22,7 +22,7 @@ public class SettingsActivity extends AppCompatActivity implements MenuFragment.
     private static final String PREFS = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
 
-    public static int activityNum = 4;
+    public static int ACTIVITY_NUM = 4;
 
     private Button clearFavourites;
 
@@ -39,11 +39,13 @@ public class SettingsActivity extends AppCompatActivity implements MenuFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        MenuFragment menuFragment = MenuFragment.newInstance(activityNum);
-        fragmentTransaction.add(R.id.bottomMenuBar, menuFragment);
-        fragmentTransaction.commit();
+        //the following lines of code add the menu fragment to the activity
+        FragmentManager fragmentManager = getSupportFragmentManager(); //used to add fragments
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); //used to add menu fragment
+        MenuFragment menuFragment = MenuFragment.newInstance(ACTIVITY_NUM); //create new instance of menu fragment, passing the activity number as a parameter
+        // so that the home button in the will be a different colour to show that this is the current page
+        fragmentTransaction.add(R.id.bottomMenuBar, menuFragment); //add menu fragment
+        fragmentTransaction.commit(); //commit the transaction
 
         Switch viewMode = findViewById(R.id.darkModeSwitch);
         viewMode.setChecked(darkTheme);

@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">NavigateUSB</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="consumer_key">VUcGycwBUZfAeipECg54hU01Z</string>
+    <string name="consumer_secret">mzoAhvTbwDiL0b7ss2QUGfvFOR1WgsNUJdPXeC6MWJ0PLb4Q2S</string>
+    <string name="twitter_screen_name">computingncl</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_settings">Settings</string>
 

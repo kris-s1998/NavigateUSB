@@ -17,12 +17,18 @@ import com.twitter.sdk.android.core.TwitterConfig;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 import com.twitter.sdk.android.tweetui.UserTimeline;
 
+/**
+ * This activity is used to display the latest updates about the building (from twitter) in a scrollable list.
+ *
+ * Created by Kris Skierniewski on 15/04/2018.
+ */
+
 public class TimelineActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener {
 
     //shared Preferences
     private static final String PREFS = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
-    private static final int ACTIVITY_NUM=5;
+    private static final int ACTIVITY_NUM=5; //unique identifier of the activity for the menu fragment
 
     private ListView tweetsList; //used to display the tweets
 
@@ -30,6 +36,8 @@ public class TimelineActivity extends AppCompatActivity implements MenuFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+
+        tweetsList = findViewById(R.id.timelineList); //intialise the list of tweets
 
 
         //the following lines of code add the menu fragment to the activity
@@ -41,34 +49,36 @@ public class TimelineActivity extends AppCompatActivity implements MenuFragment.
         fragmentTransaction.commit(); //commit the transaction
 
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
-            setTheme(R.style.AppTheme_Dark_NoActionBar);
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) { //if dark theme is activated
+            setTheme(R.style.AppTheme_Dark_NoActionBar); //set dark theme for the current activity
         }
 
+        //configure twitter before it can be used to build a timeline
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))
-                .twitterAuthConfig(new TwitterAuthConfig("VUcGycwBUZfAeipECg54hU01Z", "mzoAhvTbwDiL0b7ss2QUGfvFOR1WgsNUJdPXeC6MWJ0PLb4Q2S"))
+                .twitterAuthConfig(new TwitterAuthConfig(getString(R.string.consumer_key), getString(R.string.consumer_secret)))
                 .debug(true)
                 .build();
-        Twitter.initialize(config);
+        Twitter.initialize(config); //intiialise twitter
 
+        //build a user timeline for the newcastle university school of computing
         final UserTimeline userTimeline = new UserTimeline.Builder()
-                .screenName("computingncl")
+                .screenName(getString(R.string.twitter_screen_name)) //screen name is retrieved from strings (resources)
                 .build();
-        final TweetTimelineListAdapter adapter;
-        if(prefs.getBoolean(PREF_DARK_THEME, true)) {
+        final TweetTimelineListAdapter adapter; //create an adapter for the list of tweets
+        if(prefs.getBoolean(PREF_DARK_THEME, true)) { //if dark mode is activated
             adapter = new TweetTimelineListAdapter.Builder(this)
                     .setTimeline(userTimeline)
-                    .setViewStyle(R.style.tw__TweetDarkStyle)
+                    .setViewStyle(R.style.tw__TweetDarkStyle) //then set style of the tweets list to dark
                     .build();
         }else {
             adapter = new TweetTimelineListAdapter.Builder(this)
                     .setTimeline(userTimeline)
-                    .setViewStyle(R.style.tw__TweetLightStyle)
+                    .setViewStyle(R.style.tw__TweetLightStyle) //else set style of the tweets list to light
                     .build();
         }
-        tweetsList=findViewById(R.id.timelineList);
-        tweetsList.setAdapter(adapter);
+
+        tweetsList.setAdapter(adapter); //add the tweets adapter to the tweets list
 
     }
 
