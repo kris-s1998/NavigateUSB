@@ -1,6 +1,5 @@
 package com.example.kskie.draft3;
 
-import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
@@ -37,7 +36,7 @@ public class TimelineActivity extends AppCompatActivity implements MenuFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
-        tweetsList = findViewById(R.id.timelineList); //intialise the list of tweets
+        tweetsList = findViewById(R.id.timelineList); //initialise the list of tweets
 
 
         //the following lines of code add the menu fragment to the activity
