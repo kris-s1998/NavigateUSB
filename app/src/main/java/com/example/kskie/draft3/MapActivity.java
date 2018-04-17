@@ -42,10 +42,7 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
     ProgressBar loading;
     Button up, down;
     ImageView mask;
-    //not portable really (needs file input)
     int floorNo = 0;
-    int maxFloor;
-    int minFloor = 1;
     List<Floor> floors = new ArrayList<>();
 
     private static final String PREFS = "prefs";
@@ -135,20 +132,6 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
     @Override
     public void onFragmentInteraction(Uri uri) {
         //
-    }
-
-    private void loadImage(int floorIndex){
-        try {
-
-            Glide.with(MapActivity.this)
-                    .load(floors.get(floorIndex).getImageurl())
-                    .placeholder(loading.getIndeterminateDrawable())
-                    .into(imageView);
-
-        }catch (IndexOutOfBoundsException iobe){
-            Toast toast = Toast.makeText(MapActivity.this, "No floor to display", Toast.LENGTH_SHORT);
-            toast.show(); //if database cannot be read, display error message
-        }
     }
 
     public int getColor(int id, int x, int y){

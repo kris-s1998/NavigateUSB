@@ -8,41 +8,50 @@
         android:id="@+id/menu_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <Button
-        android:id="@+id/btn_home"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.25"
-        android:textSize="14sp"
-        android:text="Home"
-        android:paddingHorizontal="0dp"
-        android:drawableTop="@drawable/home"/>
+
+        <Button
+            android:id="@+id/btn_home"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:drawableTop="@drawable/home"
+            android:paddingHorizontal="0dp"
+            android:text="Home"
+            android:textSize="14sp"
+            />
+
         <Button
             android:id="@+id/btn_map"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
-            android:textSize="14sp"
-            android:text="Map"
             android:drawableTop="@drawable/map"
-            android:paddingHorizontal="0dp"/>
+            android:paddingHorizontal="0dp"
+            android:text="Map"
+            android:textSize="14sp" />
+
         <Button
             android:id="@+id/btn_navigate"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
-            android:textSize="14sp"
-            android:text="Navigate"
+            android:drawableTop="@drawable/navigate"
             android:paddingHorizontal="0dp"
-            android:drawableTop="@drawable/navigate"/>
+            android:text="Navigate"
+            android:textSize="14sp" />
+
         <Button
             android:id="@+id/btn_settings"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
-            android:autoSizeMaxTextSize="7sp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
-            android:text="Settings"
+            android:autoSizeMaxTextSize="7sp"
+            android:drawableTop="@drawable/settings"
             android:paddingHorizontal="0dp"
-            android:drawableTop="@drawable/settings"/>
+            android:text="Settings" />
     </LinearLayout>
 </FrameLayout>

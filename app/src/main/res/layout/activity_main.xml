@@ -87,11 +87,13 @@
                 android:dividerHeight="5dp"
                 android:drawSelectorOnTop="false"
             />
+
             <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnTimeline"
-            android:text="View more tweets"/>
+                android:id="@+id/btnTimeline"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="View more tweets" />
         </LinearLayout>
 
     </ScrollView>

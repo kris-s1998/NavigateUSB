@@ -15,6 +15,7 @@
         <item name="colorPrimary">@color/darkColorPrimary</item>
         <item name="colorPrimaryDark">@color/darkColorPrimaryDark</item>
         <item name="colorAccent">@color/darkColorAccent</item>
+        <item name="android:textColorPrimaryInverse">@color/tw__composer_black</item>
     </style>
 
     <style name="AppTheme.Dark.NoActionBar">
