@@ -109,7 +109,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         //by comparing the activity number.
         //if not the current activity, then start the appropriate activity
         if(view.getId() == btnHome.getId() && activityNum != MainActivity.ACTIVITY_NUM){
-            Intent intent = new Intent(this.getContext(), MainActivity.class);
+            Intent intent = new Intent(this.getContext(), MainActivity.class); //main activity is home
             startActivity(intent);
         }else if(view.getId() == btnMap.getId() && activityNum != MapActivity.activityNum){
             Intent intent = new Intent(this.getContext(), MapActivity.class);
