@@ -28,6 +28,12 @@ public class TimelineActivity extends AppCompatActivity implements MenuFragment.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
+            setTheme(R.style.AppTheme_Dark_NoActionBar);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
@@ -39,11 +45,6 @@ public class TimelineActivity extends AppCompatActivity implements MenuFragment.
         // so that the home button in the will be a different colour to show that this is the current page
         fragmentTransaction.add(R.id.bottomMenuBar, menuFragment); //add menu fragment
         fragmentTransaction.commit(); //commit the transaction
-
-        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
-        if(prefs.getBoolean(PREF_DARK_THEME, false)) {
-            setTheme(R.style.AppTheme_Dark_NoActionBar);
-        }
 
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .logger(new DefaultLogger(Log.DEBUG))
