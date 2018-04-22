@@ -1,10 +1,12 @@
 package com.example.kskie.draft3;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 
 public class RoomActivity extends AppCompatActivity {
 
-    public static final String FILE_NAME = "testFileNew.txt";
+    public static final String FILE_NAME = "favourites.txt";
     public static final String SEPARATOR = "%";
 
 
@@ -44,6 +46,7 @@ public class RoomActivity extends AppCompatActivity {
     private TextView txt_tutors; //used to display the tutors which use the current room
     private ImageButton btn_favourite; //used to add/remove room from favourites
     private ImageView img_room_pic; //used to display a picture of the room
+    private Button btn_direct_here; //used to navigate to the directions page and insert the number of this room into destination field
 
     private static final String PREFS = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -68,6 +71,17 @@ public class RoomActivity extends AppCompatActivity {
         txt_tutors = findViewById(R.id.tutor_list);
         btn_favourite = findViewById(R.id.btn_favourite);
         img_room_pic = findViewById(R.id.roomImageView);
+        btn_direct_here = findViewById(R.id.btn_direct_here);
+        btn_direct_here.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RoomActivity.this, NavigateActivity.class);
+                Bundle b = new Bundle(); //used to pass room information between the two activities
+                b.putString(MainActivity.ROOM_NO,thisRoom.getNumber()); //put the room number in the bundle so it can be set as the destination
+                intent.putExtras(b);
+                startActivity(intent); //start navigate activity
+            }
+        });
 
         //initialise the database reference to the "rooms" branch of the database
         databaseReference = FirebaseDatabase.getInstance().getReference(MainActivity.ROOMS_DB_REFERENCE);
@@ -131,7 +145,7 @@ public class RoomActivity extends AppCompatActivity {
                     txt_room_header.setText("Room "+currentRoom.getNumber()+" (Level "+ currentRoom.getLevel()+ ")");  //then display the name and floor number of the room
                     Glide.with(this) //load the image of the room using the Glide library
                             .load(currentRoom.getImage()) // image url
-                            //.placeholder(R.drawable.logo1) // any placeholder to load at start
+                            .placeholder(R.drawable.loading) // any placeholder to load at start
                             .error(R.drawable.logo2)  // any image in case of error
                             .centerCrop().into(img_room_pic); // resizing
                     thisRoom= currentRoom; //set the global variable "thisRoom" to the current room as this is the room that matches room number AND first name and last name

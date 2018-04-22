@@ -24,10 +24,14 @@
         </activity>
         <activity
             android:name=".MapActivity"
-            android:label="Map" />
+            android:label="Map"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".RoomActivity"
-            android:label="Room information" />
+            android:label="Room information"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".NavigateActivity"
             android:configChanges="orientation"

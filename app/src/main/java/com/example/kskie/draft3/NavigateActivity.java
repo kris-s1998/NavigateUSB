@@ -44,6 +44,7 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
     private ImageView img_btn_start; //arrow image button to show drop down menu for the destination point
     private ImageView img_start; //icon next to the starting point input field
     private ImageView img_dest; //icon next to the destination point input field
+    private Button btn_swap_locations;
 
     private static final String PREFS = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -75,6 +76,16 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
         btn_get_directions = findViewById(R.id.btn_getDirections);
         img_start = findViewById(R.id.startIcon);
         img_dest = findViewById(R.id.destinationIcon);
+        btn_swap_locations = findViewById(R.id.btn_swap_locations);
+        //add click listener for the swap button
+        btn_swap_locations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String start = actv_start.getText().toString(); //store starting location temporarily
+                actv_start.setText(actv_dest.getText().toString()); //set start to destination
+                actv_dest.setText(start); //set destination to start
+            }
+        });
 
         if(prefs.getBoolean(PREF_DARK_THEME, false)) { //if dark mode is activated
             //then change the icons and drop down menu buttons to white so they are visible on the dark background
@@ -107,6 +118,17 @@ public class NavigateActivity extends AppCompatActivity implements MenuFragment.
                     }
                 }
                 setAdapter(); //when nodes are loaded, add them to the drop down menus (start and destination)
+                Bundle b = getIntent().getExtras(); //get the bundle which was passed to this activity (when a room is selected)
+                //the following variables are used to store the details of the room which was selected in the main activity
+                String roomNo = ""; //initialise room number
+
+                if(b != null) { //only if bundle is not null
+                    for(Node n:nodes){ //find the node which matches the room number which was selected in the RoomActivity
+                        if(n.getLocation().contains(b.getString(MainActivity.ROOM_NO))){
+                            actv_dest.setText(n.getLocation()); //then set the destination to the selected room number
+                        }
+                    }
+                }
             }
 
             @Override

@@ -86,13 +86,29 @@
                     android:padding="5dp"
                     app:srcCompat="@drawable/drop_down_arrow" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_getDirections"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/btn_swap_locations"
+                android:layout_weight="0.3"
+                android:drawableRight="@drawable/swap"
+                android:text="Swap"
+                />
+            <Button
+                android:id="@+id/btn_getDirections"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/middleBar"
-                android:text="Show directions" />
+                android:text="Show directions"
+                android:drawableRight="@drawable/arrow_go"
+                android:layout_weight="0.7"/>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/txtDirections"
