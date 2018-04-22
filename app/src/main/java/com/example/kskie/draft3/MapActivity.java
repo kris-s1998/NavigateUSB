@@ -42,9 +42,20 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
     ProgressBar loading;
     Button up, down;
     ImageView mask;
+
+    //determine the branch of the database containing the floor picture links
+    static String FLOORS_DB_REFERENCE = "floors";
+
+
+    /**
+     * tracker for floor number and the container to iterate through
+     * to change floor
+     */
     int floorNo = 0;
     List<Floor> floors = new ArrayList<>();
 
+
+    //shared preferences
     private static final String PREFS = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
 
@@ -52,7 +63,7 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // EDIT
+        //Load the dark theme preference and check to see if dark mode is enabled
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         if(prefs.getBoolean(PREF_DARK_THEME, false)) {
             setTheme(R.style.AppTheme_Dark_NoActionBar);
@@ -61,30 +72,42 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        //initialise view items
         imageView = findViewById(R.id.image);
         storageRef = FirebaseStorage.getInstance().getReference();
         loading = findViewById(R.id.loadingBar);
         mask = findViewById(R.id.masks);
 
+        //the following lines of code add the menu fragment to the activity
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         MenuFragment menuFragment = MenuFragment.newInstance(activityNum);
+        // so that the home button in the will be a different colour to show that this is the current page
         fragmentTransaction.add(R.id.bottomMenuBar, menuFragment);
         fragmentTransaction.commit();
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("floors");
+
+        //initialise the database reference containing the image URL's to the correct branch
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child(FLOORS_DB_REFERENCE);
+
+        //initialise the floors list to contain all the image URL's into a wrapper class floors
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //as this method is triggered every time the database changes
+                //clear the floors list before populating it again to avoid duplicates
                 floors.clear();
 
+                //add each floor to the list from the data snapshot
                 for(DataSnapshot d : dataSnapshot.getChildren()){
                     Floor f = d.getValue(Floor.class);
                     floors.add(f);
                 }
 
+                //load the first floor
                 Glide.with(MapActivity.this)
                         .load(floors.get(0).getImageurl())
+                        //using the placeholder image of a loading drawable
                         .placeholder(loading.getIndeterminateDrawable())
                         .into(imageView);
                 imageView.setZoom((float)0.99);
@@ -98,31 +121,35 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
             }
         });
 
+        //find and set the up button functionality
         up = findViewById(R.id.btn_up);
         up.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (floorNo < floors.size()-1)
-                    floorNo++;
-                    Glide.with(MapActivity.this)
-                        .load(floors.get(floorNo).getImageurl())
-                        .placeholder(loading.getIndeterminateDrawable())
-                        .into(imageView);
+                    if (floorNo < floors.size()-1){
+                        floorNo++;
+                        Glide.with(MapActivity.this)
+                                .load(floors.get(floorNo).getImageurl())
+                                .placeholder(loading.getIndeterminateDrawable())
+                                .into(imageView);
+                    }
                 }
         });
 
+        //find and set the down button functionality
         down = findViewById(R.id.btn_down);
         down.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (floorNo > 0)
+                if (floorNo > 0) {
                     floorNo--;
-                Glide.with(MapActivity.this)
-                        .load(floors.get(floorNo).getImageurl())
-                        .placeholder(loading.getIndeterminateDrawable())
-                        .into(imageView);
+                    Glide.with(MapActivity.this)
+                            .load(floors.get(floorNo).getImageurl())
+                            .placeholder(loading.getIndeterminateDrawable())
+                            .into(imageView);
+                }
             }
         });
 
@@ -133,25 +160,5 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
     public void onFragmentInteraction(Uri uri) {
         //
     }
-
-    public int getColor(int id, int x, int y){
-                ImageView img = (ImageView) findViewById (id);
-               img.setDrawingCacheEnabled(true);
-                Bitmap bitmap = Bitmap.createBitmap(img.getDrawingCache());
-                img.setDrawingCacheEnabled(false);
-                int pixel = bitmap.getPixel(x,y);
-                return pixel;
-            }
-
-            public boolean similarity(int color1, int color2, int tolerance){
-                if ((int) Math.abs (Color.red (color1) - Color.red (color2)) > tolerance )
-                       return false;
-                if ((int) Math.abs (Color.green (color1) - Color.green (color2)) > tolerance )
-                        return false;
-                if ((int) Math.abs (Color.blue (color1) - Color.blue (color2)) > tolerance )
-                        return false;
-                return true;
-            }
-
 }
 

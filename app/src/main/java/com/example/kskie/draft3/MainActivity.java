@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // EDIT
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         if(prefs.getBoolean(PREF_DARK_THEME, false)) {
             setTheme(R.style.AppTheme_Dark_NoActionBar);
