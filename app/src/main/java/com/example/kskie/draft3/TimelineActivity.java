@@ -64,7 +64,7 @@ public class TimelineActivity extends AppCompatActivity implements MenuFragment.
                 .screenName(getString(R.string.twitter_screen_name)) //screen name is retrieved from strings (resources)
                 .build();
         final TweetTimelineListAdapter adapter; //create an adapter for the list of tweets
-        if(prefs.getBoolean(PREF_DARK_THEME, true)) { //if dark mode is activated
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) { //if dark mode is activated
             adapter = new TweetTimelineListAdapter.Builder(this)
                     .setTimeline(userTimeline)
                     .setViewStyle(R.style.tw__TweetDarkStyle) //then set style of the tweets list to dark
