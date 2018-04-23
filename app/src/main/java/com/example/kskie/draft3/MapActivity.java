@@ -34,14 +34,20 @@ import java.util.Map;
 
 import static com.example.kskie.draft3.MainActivity.*;
 
+/**
+ * This is the activity which displays a map of the building. The user can switch between the different floors using the up and down buttons.
+ *
+ * Created by Taylor Sutcliffe on 28/02/2018.
+ */
+
 public class MapActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener {
     public static int activityNum = 2;
 
-    StorageReference storageRef;
-    TouchImageView imageView;
-    ProgressBar loading;
-    Button up, down;
-    ImageView mask;
+    private StorageReference storageRef;
+    private TouchImageView imageView;
+    private ProgressBar loading;
+    private Button up, down;
+    private ImageView mask;
 
     //determine the branch of the database containing the floor picture links
     static String FLOORS_DB_REFERENCE = "floors";
@@ -52,7 +58,7 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
      * to change floor
      */
     int floorNo = 0;
-    List<Floor> floors = new ArrayList<>();
+    private List<Floor> floors = new ArrayList<>();
 
 
     //shared preferences
@@ -143,6 +149,7 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
 
             @Override
             public void onClick(View v) {
+                //load the appropriate floor plan image
                 if (floorNo > 0) {
                     floorNo--;
                     Glide.with(MapActivity.this)
@@ -158,7 +165,7 @@ public class MapActivity extends AppCompatActivity implements MenuFragment.OnFra
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        //
+        //needs to be implemented in order to use fragment but does not need to do anything.
     }
 }
 

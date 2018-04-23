@@ -15,21 +15,26 @@ import android.widget.Toast;
 
 import java.io.File;
 
-public class SettingsActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener {
+/**
+ * This is the settings activity, used to switch between light and dark mode. Also used to delete all favourites.
+ *
+ * Created by Kris Skierniewski on 28/02/2018.
+ */
 
+public class SettingsActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener {
 
     //shared Preferences
     private static final String PREFS = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
 
-    public static int ACTIVITY_NUM = 4;
+    public static int ACTIVITY_NUM = 4; //unique identifier of this activity used by the menu fragment
 
     private Button clearFavourites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // EDIT
+        //if dark mode is selected then change the theme of the activity to dark
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
         Boolean darkTheme = prefs.getBoolean(PREF_DARK_THEME, false);
         if(darkTheme) {
@@ -59,29 +64,29 @@ public class SettingsActivity extends AppCompatActivity implements MenuFragment.
         clearFavourites = findViewById(R.id.clearFavouritesBtn);
         clearFavourites.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                deleteFile(RoomActivity.FILE_NAME);
+            public void onClick(View view) { //when delete button is clicked
+                deleteFile(RoomActivity.FILE_NAME); //delete the favourites file
                 Toast toast = Toast.makeText(SettingsActivity.this, "All favourites deleted.", Toast.LENGTH_SHORT);
-                toast.show();
+                toast.show(); //and display confirmation message
             }
         });
 
     }
 
+    //used to toggle the theme between light and dark
     private void toggleTheme(boolean darkTheme) {
         SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
         editor.putBoolean(PREF_DARK_THEME, darkTheme);
         editor.apply();
 
         Intent i = getIntent();
-        finish();
-
+        finish(); //restart activity with the correct theme
         startActivity(i);
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        //
+        //no action needed
     }
 }
 

@@ -29,6 +29,13 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
+/**
+ * This activity is used to display information about each room in the building.
+ * It is also used to add and remove rooms from favourites.
+ *
+ * Created by Kris Skierniewski on 28/02/2018.
+ */
+
 public class RoomActivity extends AppCompatActivity {
 
     public static final String FILE_NAME = "favourites.txt";

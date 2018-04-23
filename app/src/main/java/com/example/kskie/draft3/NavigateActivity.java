@@ -23,6 +23,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+/**
+ * This activity is used to find and display directions between two locations in the building. The strarting point
+ * and destination is selected by the user using two drop down menus but the user can also search for the room by typing in the lcoation.
+ *
+ * Created by Kris Skierniewski on 28/02/2018.
+ */
+
 public class NavigateActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener{
     public static int ACTIVITY_NUM = 3; //identifier used by the menu fragment
     /*the class uses all nodes (destinations) to calculate routes, however not all locations are suitable and required to
