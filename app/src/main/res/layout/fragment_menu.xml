@@ -17,7 +17,7 @@
             android:layout_weight="0.25"
             android:drawableTop="@drawable/home"
             android:paddingHorizontal="0dp"
-            android:text="Home"
+            android:text="@string/home_label"
             android:textSize="14sp"
             />
 
@@ -29,7 +29,7 @@
             android:layout_weight="0.25"
             android:drawableTop="@drawable/map"
             android:paddingHorizontal="0dp"
-            android:text="Map"
+            android:text="@string/map_label"
             android:textSize="14sp" />
 
         <Button
@@ -40,7 +40,7 @@
             android:layout_weight="0.25"
             android:drawableTop="@drawable/navigate"
             android:paddingHorizontal="0dp"
-            android:text="Navigate"
+            android:text="@string/navigate_label"
             android:textSize="14sp" />
 
         <Button
@@ -52,6 +52,6 @@
             android:autoSizeMaxTextSize="7sp"
             android:drawableTop="@drawable/settings"
             android:paddingHorizontal="0dp"
-            android:text="Settings" />
+            android:text="@string/settings_label" />
     </LinearLayout>
 </FrameLayout>

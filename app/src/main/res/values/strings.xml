@@ -1,6 +1,19 @@
 <resources>
     <string name="app_name">NavigateUSB</string>
 
+    <string name="home_label">Home</string>
+    <string name="map_label">Map</string>
+    <string name="navigate_label">Navigate</string>
+    <string name="settings_label">Settings</string>
+    <string name="direct_here_label">Direct me to this room</string>
+    <string name="start_point_label">Starting point...</string>
+    <string name="destination_label">Destination...</string>
+
+    <string name="start_icon_description">An image to mark that this is the starting point field</string>
+    <string name="dest_icon_description">An image to mark that this is the destination field</string>
+    <string name="room_image_description">An image of the selected room</string>
+    <string name="favourites_description">Add to favourites button</string>
+
     <string name="consumer_key">VUcGycwBUZfAeipECg54hU01Z</string>
     <string name="consumer_secret">mzoAhvTbwDiL0b7ss2QUGfvFOR1WgsNUJdPXeC6MWJ0PLb4Q2S</string>
     <string name="twitter_screen_name">computingncl</string>

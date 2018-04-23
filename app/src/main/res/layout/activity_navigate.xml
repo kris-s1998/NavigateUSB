@@ -34,6 +34,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_toLeftOf="@id/actvStart"
                     android:layout_weight="0.05"
+                    android:contentDescription="@string/start_icon_description"
                     app:srcCompat="@drawable/current_location" />
 
                 <AutoCompleteTextView
@@ -42,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_weight="0.9"
-                    android:hint="Starting point..." />
+                    android:hint="@string/start_point_label"/>
 
                 <ImageView
                     android:id="@+id/startArrow"
@@ -67,7 +68,8 @@
                     android:layout_height="40dp"
                     android:layout_toLeftOf="@id/actvDest"
                     android:layout_weight="0.05"
-                    app:srcCompat="@drawable/destination_location" />
+                    app:srcCompat="@drawable/destination_location"
+                    android:contentDescription="@string/dest_icon_description"/>
 
                 <AutoCompleteTextView
                     android:id="@+id/actvDest"
@@ -75,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_weight="0.9"
-                    android:hint="Destination..." />
+                    android:hint="@string/destination_label" />
 
                 <ImageView
                     android:id="@+id/destArrow"

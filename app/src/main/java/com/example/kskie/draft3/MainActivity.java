@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
                 .maxItemsPerRequest(1)
                 .build();
         final TweetTimelineListAdapter adapter; //adapter for the tweet list
-        if(prefs.getBoolean(PREF_DARK_THEME, true)) { //if app is in dark mode
+        if(prefs.getBoolean(PREF_DARK_THEME, false)) { //if app is in dark mode
             adapter = new TweetTimelineListAdapter.Builder(this)
                     .setTimeline(userTimeline)
                     .setViewStyle(R.style.tw__TweetDarkStyle) //then set the twitter timeline to dark mode
